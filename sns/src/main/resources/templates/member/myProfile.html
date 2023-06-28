@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/layout1}">
+
+<!-- 각 페이지의 CSS가 작성될 위치 -->
+<th:block layout:fragment="css">
+	<style>
+</style>
+</th:block>
+
+<div layout:fragment="content">
+	<div class="s-content content">
+		<main class="row content__page">
+			<section class="column large-full entry format-standard">
+
+				<div class="media-wrap">
+					<div>
+						<swiper-container class="mySwiper" pagination="true">
+						<swiper-slide> <img
+							src="./android-chrome-512x512.png" alt="" />사용자 올린 사진 리스트들..
+						10개까지</swiper-slide> <swiper-slide>Slide 2</swiper-slide> <swiper-slide>Slide
+						3</swiper-slide> <swiper-slide>Slide 4</swiper-slide> <swiper-slide>Slide
+						5</swiper-slide> <swiper-slide>Slide 6</swiper-slide> <swiper-slide>Slide
+						7</swiper-slide> <swiper-slide>Slide 8</swiper-slide> <swiper-slide>Slide
+						9</swiper-slide> </swiper-container>
+					</div>
+				</div>
+	</div>
+
+	<div class="content__page-header" style="display: flex; justify-content: space-between; align-items: center;">
+    	<h1 class="display-1" style="margin: 0 auto;">닉네임</h1>
+        <button type="button" class="btn btn-secondary">수정하기</button>
+	</div>
+
+
+	<!-- end content__page-header -->
+
+	<p style="text-align: center;">소개글</p>
+
+	</section>
+	<div class="masonry-wrap">
+		<div class="masonry">
+			<div class="grid-sizer"></div>
+
+			<article class="masonry__brick entry format-standard animate-this">
+
+				<div class="entry__thumb">
+					<swiper-container class="mySwiper" pagination="true">
+					<a href="#" class="entry__thumb-link"> <swiper-slide>Slide
+						1</swiper-slide>
+					</a> <swiper-slide>Slide 2</swiper-slide> <swiper-slide>Slide
+					3</swiper-slide> <swiper-slide>Slide 4</swiper-slide> <swiper-slide>Slide
+					5</swiper-slide> <swiper-slide>Slide 6</swiper-slide> <swiper-slide>Slide
+					7</swiper-slide> <swiper-slide>Slide 8</swiper-slide> <swiper-slide>Slide
+					9</swiper-slide> </swiper-container>
+				</div>
+				<div class="entry__text">
+					<div class="entry__header">
+						<h2 class="entry__title">
+							<a href="single-standard.html">글제목</a>
+						</h2>
+						<div class="entry__meta">
+							<span class="entry__meta-cat"> <a href="category.html">작성일</a>
+							</span>
+						</div>
+					</div>
+					<div class="entry__excerpt">
+						<p>내용내용내용내용내용 - 현재 div 리스트 갯수만큼 반복</p>
+					</div>
+				</div>
+			</article>
+			<!-- end article -->
+		</div>
+		<!-- end masonry -->
+	</div>
+	</main>
+</div>
+<!-- end s-content -->
+</div>
+
+<!-- 각 페이지의 스크립트가 작성될 위치 -->
+<th:block layout:fragment="script">
+	<script th:inline="javascript">
+		
+	</script>
+</th:block>
+
+</html>

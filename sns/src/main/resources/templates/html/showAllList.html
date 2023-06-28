@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/layout1}">
+
+<!-- 각 페이지의 CSS가 작성될 위치 -->
+<th:block layout:fragment="css">
+	<style>
+</style>
+</th:block>
+
+<div layout:fragment="content">
+	<!-- site content
+        ================================================== -->
+	<div class="s-content content">
+		<main class="row content__page">
+			<section class="column large-full entry format-standard">
+				<div class="media-wrap">
+					<div>
+						<swiper-container class="mySwiper" pagination="true">
+						<swiper-slide>
+						<img src="./android-chrome-512x512.png" alt="" /></swiper-slide>
+						<swiper-slide>Slide 2</swiper-slide> <swiper-slide>Slide
+						3</swiper-slide> <swiper-slide>Slide 4</swiper-slide> <swiper-slide>Slide
+						5</swiper-slide> <swiper-slide>Slide 6</swiper-slide> <swiper-slide>Slide
+						7</swiper-slide> <swiper-slide>Slide 8</swiper-slide> <swiper-slide>Slide
+						9</swiper-slide> </swiper-container>
+					</div>
+				</div>
+
+				<div class="content__page-header">
+					<h1 class="display-1">글제목</h1>
+				</div>
+				<!-- end content__page-header -->
+
+				<p>본문... 현재 보이는 한칸 반복 - 댓글은 페이징처리</p>
+
+				<div class="comments-wrap">
+					<div id="comments" class="column large-12">
+
+						<h3 class="h2">댓글</h3>
+
+						<!-- START commentlist -->
+						<ol class="commentlist">
+							<li class="depth-1 comment">
+								<div class="comment__avatar">
+									<img class="avatar" src="images/avatars/user-01.jpg" alt=""
+										width="50" height="50" />
+								</div>
+
+								<div class="comment__content">
+									<div class="comment__info">
+										<div class="comment__author">닉네임</div>
+
+										<div class="comment__meta">
+											<div class="comment__time">작성일</div>
+											<div class="comment__reply"></div>
+										</div>
+									</div>
+
+									<div class="comment__text">
+										<p>댓글내용</p>
+									</div>
+									<div class="row">
+										<div class="column large-full">
+											<nav class="pgn">
+												<ul>
+													<li><a class="pgn__prev" href="#0">Prev</a></li>
+													<li><a class="pgn__num" href="#0">1</a></li>
+													<li><span class="pgn__num current">2</span></li>
+													<li><a class="pgn__num" href="#0">3</a></li>
+													<li><a class="pgn__num" href="#0">4</a></li>
+													<li><a class="pgn__num" href="#0">5</a></li>
+													<li><span class="pgn__num dots">…</span></li>
+													<li><a class="pgn__num" href="#0">8</a></li>
+													<li><a class="pgn__next" href="#0">Next</a></li>
+												</ul>
+											</nav>
+										</div>
+									</div>
+								</div>
+							</li>
+							<!-- end comment level 1 -->
+						</ol>
+						<!-- END commentlist -->
+					</div>
+					<!-- end comments -->
+
+					<div class="column large-12 comment-respond">
+						<!-- START respond -->
+						<div id="respond">
+							<h3 class="h2">댓글</h3>
+							<hr />
+							<form name="contactForm" id="contactForm" method="post" action=""
+								autocomplete="off">
+								<fieldset>
+									<div class="form-field">
+										<div class="message form-field">
+											<textarea name="cMessage" id="cMessage" class="full-width"
+												placeholder="댓글입력"></textarea>
+										</div>
+
+										<input name="submit" id="submit"
+											class="btn btn--primary btn-wide btn--large full-width"
+											value="전송" type="submit" />
+								</fieldset>
+							</form>
+							<!-- end form -->
+						</div>
+						<!-- END respond-->
+					</div>
+					<!-- end comment-respond -->
+				</div>
+				<!-- end comments-wrap -->
+			</section>
+		</main>
+	</div>
+
+	<!-- 각 페이지의 스크립트가 작성될 위치 -->
+	<th:block layout:fragment="script">
+		<script th:inline="javascript">
+			
+		</script>
+	</th:block>
+</html>

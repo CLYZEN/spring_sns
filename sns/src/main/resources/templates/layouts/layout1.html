@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" class="no-js" lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="description" content="" />
+<meta name="author" content="" />
+<!-- 공통 css -->
+<!-- mobile specific metas
+    ================================================== -->
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<!-- CSS
+    ================================================== -->
+<link rel="stylesheet" th:href="@{/css/base.css}" />
+<link rel="stylesheet" th:href="@{/css/vendor.css}" />
+<link rel="stylesheet" th:href="@{/css/main.css}" />
+<!-- swiper -->
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
+
+<!-- script
+    ================================================== -->
+<script th:src="@{/js/modernizr.js}"></script>
+
+<!-- favicons
+    ================================================== -->
+<link rel="apple-touch-icon" sizes="180x180"
+	th:href="@{/apple-touch-icon.png}" />
+<link rel="icon" type="image/png" sizes="32x32"
+	th:href="@{/favicon-32x32.png}" />
+<link rel="icon" type="image/png" sizes="16x16"
+	th:href="@{/favicon-16x16.png}" />
+<link rel="manifest" href="site.webmanifest" />
+
+<!-- 각 페이지의 CSS가 작성될 위치 -->
+<th:block layout:fragment="css"></th:block>
+
+<title>무슨무슨sns</title>
+</head>
+<body>
+
+	<!-- preloader
+    ================================================== -->
+	<!--     <div id="preloader">
+      <div id="loader" class="dots-fade">
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+    </div> -->
+
+	<div id="top" class="s-wrap site-wrapper">
+		<div th:replace="fragments/header::header"></div>
+		<div layout:fragment="content" class="s-content"></div>
+		<div th:replace="fragments/footer::footer"></div>
+	</div>
+	<!-- 공통 js -->
+	<!-- Java Script
+    ================================================== -->
+	<script th:src="@{/js/jquery-3.2.1.min.js}"></script>
+	<script th:src="@{/js/plugins.js}"></script>
+	<script th:src="@{/js/mainjs.js}"></script>
+
+    <!-- swiper -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-element-bundle.min.js"></script>
+
+	<!-- 각 페이지의 스크립트가 작성될 위치 -->
+	<th:block layout:fragment="script"></th:block>
+</body>
+</html>
