@@ -25,4 +25,9 @@ public class MemberController {
 	public String myProfile() {
 		return "member/myProfile";
 	}
+	
+	@GetMapping(value = "myProfileModify")
+	public String myProfileModify() {
+		return "member/myProfileModify";
+	}
 }
