@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/layout1}">
+
+<!-- 각 페이지의 CSS가 작성될 위치 -->
+<th:block layout:fragment="css">
+	<style>
+@import url('https://fonts.googleapis.com/css?family=Muli&display=swap')
+	;
+
+* {
+	box-sizing: border-box;
+}
+
+body {
+	background-color: rgb(248,249,249);
+	color: black;
+	font-family: 'Muli', sans-serif;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	height: 100vh;
+	overflow: hidden;
+	margin: 0 auto;
+	padding-right: 70px; 
+}
+
+.container {
+	background-color: rgba(0, 0, 0, 0.4);
+	padding: 20px 40px;
+	border-radius: 5px;
+}
+
+.container h1 {
+	text-align: center;
+	margin-bottom: 30px;
+}
+
+.container a {
+	text-decoration: none;
+	color: lightblue;
+}
+
+.btn {
+	cursor: pointer;
+	display: inline-block;
+	width: 100%;
+	background: lightblue;
+	padding: 15px;
+	font-family: inherit;
+	font-size: 16px;
+	border: 0;
+	border-radius: 5px;
+}
+
+.btn:focus {
+	outline: 0;
+}
+
+.btn:active {
+	transform: scale(0.98);
+}
+
+.text {
+	margin-top: 30px;
+}
+
+.form-control {
+	position: relative;
+	margin: 20px 0 40px;
+	width: 300px;
+}
+
+.form-control input {
+	background-color: transparent;
+	border: 0;
+	border-bottom: 2px black solid;
+	display: block;
+	width: 100%;
+	padding: 15px 0;
+	font-size: 18px;
+	color: #fff;
+}
+
+.form-control input:focus, .form-control input:valid {
+	outline: 0;
+	border-bottom-color: lightblue;
+}
+
+.form-control label {
+	position: absolute;
+	top: 15px;
+	left: 0;
+	pointer-events: none;
+}
+
+form p {
+	letter-spacing: 0.3rem;
+	display: flex;
+	justify-content: space-between;
+}
+
+.form-control label span {
+	display: inline-block;
+	font-size: 18px;
+	min-width: 5px;
+	transition: 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.form-control input:focus+label span, .form-control input:valid+label span
+	{
+	color: lightblue;
+	transform: translateY(-30px);
+}
+</style>
+</th:block>
+
+<div layout:fragment="content">
+	<div class="s-content content">
+		<main class="row content__page">
+			<h1>로그인</h1>
+			<form action="/members/login" method="post">
+				<div class="form-control">
+					<input type="text" id="email" name="email" required /> <label th:for="email">이메일</label>
+				</div>
+
+				<div class="form-control">
+					<input type="password"  id="password"
+									name="password" required /> <label th:for="password">패스워드</label>
+				</div>
+
+				<button type="submit" class="btn">로그인</button>
+				
+				<p th:if="${loginErrorMsg}" class="error" th:text="${loginErrorMsg}"></p>
+				<p class="text">
+					회원이 아니신가요? <a href="/members/register">회원가입</a>
+				</p>
+				<input type="hidden" th:name="${_csrf.parameterName}"th:value="${_csrf.token}">
+			</form>
+		</main>
+	</div>
+	<!-- end s-content -->
+</div>
+
+<!-- 각 페이지의 스크립트가 작성될 위치 -->
+<th:block layout:fragment="script">
+	<script th:inline="javascript">
+	const labels = document.querySelectorAll('.form-control label');
+
+	labels.forEach((label) => {
+	  label.innerHTML = label.textContent
+	    .split('')
+	    .map((letter, idx) => `<span style="transition-delay:${idx * 80}ms">${letter}</span>`)
+	    .join('');
+	});
+	</script>
+</th:block>
+
+</html>

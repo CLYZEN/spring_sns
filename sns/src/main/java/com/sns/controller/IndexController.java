@@ -11,7 +11,8 @@ public class IndexController {
 		return "index";
 	}
 	
-	@GetMapping(value = "contact")
+	
+	@GetMapping(value = "/contact")
 	public String contact() {
 		return "html/contact";
 	}
