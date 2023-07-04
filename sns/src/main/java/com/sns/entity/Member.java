@@ -24,27 +24,34 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class Member {
+public class Member extends BaseEntity {
 	
 	@Id
-	@Column
+	@Column(name = "member_id")
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long memberId;	// 회원식별자
+	
 	@Column(unique = true)
 	private String email; // 회원이메일 (ID로사용)
+	
 	@Column(nullable = false)
-	private String pasword; // 비밀번호
+	private String password; // 비밀번호
+	
 	@Column(nullable = false)
 	private String nickname; // 닉네임
+	
 	@Enumerated(EnumType.STRING)
 	private Role role; // ADMIN , USER
+	
 	@Column(nullable = true)
 	private String memberTitle; // 자기소개 제목
+	
 	@Lob
-	@Column(nullable = true)
+	@Column(nullable = true, columnDefinition = "longtext")
 	private String memberContent; // 자기소개 본문
+	
 	@Column(nullable = true)
-	private String profileImeUrl; // 프로필사진
+	private String profileImgUrl; // 프로필사진
 	
 	public static Member createMember(MemberFormDto memberFormDto, PasswordEncoder passwordEncoder) {
 		String password = passwordEncoder.encode(memberFormDto.getPassword());
@@ -52,7 +59,7 @@ public class Member {
 		Member member = new Member();
 		member.setEmail(memberFormDto.getEmail());
 		member.setNickname(memberFormDto.getNickname());
-		member.setPasword(password);
+		member.setPassword(password);
 		member.setRole(Role.USER);
 		
 		return member;
