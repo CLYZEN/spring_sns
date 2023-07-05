@@ -14,6 +14,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,9 +28,8 @@ import lombok.ToString;
 public class Member extends BaseEntity {
 	
 	@Id
-	@Column(name = "member_id")
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long memberId;	// 회원식별자
+	private Long memberId;
 	
 	@Column(unique = true)
 	private String email; // 회원이메일 (ID로사용)
