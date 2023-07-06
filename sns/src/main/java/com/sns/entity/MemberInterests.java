@@ -2,7 +2,6 @@ package com.sns.entity;
 
 import com.sns.converter.BooleanToYNConverter;
 
-import com.sns.id.MemberInterestsId;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

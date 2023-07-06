@@ -6,6 +6,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
@@ -22,6 +24,9 @@ import lombok.ToString;
 public class PostInterests {
 	
 	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long postInterestsId;
+	
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "post_no")
 	private Post post;
