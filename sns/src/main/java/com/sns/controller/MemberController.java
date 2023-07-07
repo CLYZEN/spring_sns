@@ -70,4 +70,10 @@ public class MemberController {
 	public String myProfileModify() {
 		return "member/myProfileModify";
 	}
+	
+	@GetMapping(value = "/write")
+	public String writePost() {
+		return "html/writePost";
+	}
+	
 }

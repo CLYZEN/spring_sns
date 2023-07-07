@@ -12,7 +12,7 @@
 
 <style>
 .error {
-	font-size: 10px;
+	font-size: 12px;
 	color: rgb(242,116,13);
 }
 .fieldError {
@@ -202,15 +202,15 @@ a{color:inherit;text-decoration:none}
     	<form action="/members/login" method="post">
 	        <div class="group">
 	          <label  th:for="email" class="label">이메일</label>
-	          <input id="email" name="email" type="text" class="input">
+	          <input id="email" name="email" type="email" class="input">
 	        </div>
 	        <div class="group">
 	          <label th:for="password" class="label">비밀번호</label>
 	          <input id="password" name="password" type="password" class="input" data-type="password">
 	        </div>
 	        <div class="group">
-	          <input id="check" type="checkbox" class="check" checked>
-	          <label for="check"><span class="icon"></span> 이메일 기억 </label>
+	          <input id="id_save" type="checkbox" class="check">
+	          <label for="id_save"><span class="icon"></span> 이메일 기억 </label>
 	        </div>
 	        <div class="group">
 	          <input type="submit" class="button" value="로그인">
@@ -262,6 +262,7 @@ a{color:inherit;text-decoration:none}
 	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 	<script
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+		<script type="text/javascript" th:src="@{/js/cookie.js}"></script>
 <!-- 	<script th:src="@{/lib/wow/wow.min.js}"></script>
 	<script th:src="@{/lib/easing/easing.min.js}"></script>
 	<script th:src="@{/lib/waypoints/waypoints.min.js}"></script>
@@ -298,6 +299,37 @@ a{color:inherit;text-decoration:none}
     } else {
         $(".login-html").prepend('<input id="tab-1" type="radio" name="tab" class="sign-in" checked><label for="tab-1" class="tab">로그인</label> <input id="tab-2" type="radio" name="tab" class="sign-up"><label for="tab-2" class="tab">회원가입</label>');
     }
+    
+    // 이메일 기억
+    $(document).ready(function(){
+		var userInputId = getCookie("userInputId"); //쿠키값(이메일주소)을 가져온다.
+		var setCookieYN = getCookie("setCookieYN"); //쿠키값(이메일 저장 여부)을 가져온다.
+		
+		if(setCookieYN == 'Y') { //이메일 저장 여부가 Y면
+			$("#id_save").prop("checked", true); //이메일 저장 체크박스를 체크한다
+			$("#email").val(userInputId); //이메일 input창에는 쿠키에서 가져온 이메일 주소를 넣는다.
+		} else {
+			$("#id_save").prop("checked", false);
+		}
+		
+		
+		//로그인 버튼 클릭시 쿠키에 이메일 저장여부, 이메일 저장
+		$("#loginbtn").click(function(){
+			
+			if($("#id_save").is(":checked")) { //이메일 저장에 체크가 되어있다면
+				var userInputId = $("#email").val(); //이메일 값을 가지고 온다.
+				
+				//쿠키 생성
+				setCookie("userInputId", userInputId, 60); //이메일 저장
+				setCookie("setCookieYN", "Y", 60); //이메일 저장여부 저장
+			} else {
+				//쿠키 삭제
+				deleteCookie("userInputId");
+				deleteCookie("setCookieYN");
+			}
+			
+		});
+	});
   </script>
 </body>
 

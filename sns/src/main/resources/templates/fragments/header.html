@@ -54,8 +54,8 @@
             <li class="current"><a href="main" title="" sec:authorize="isAuthenticated()">홈</a></li>
             <li><a href="/list" title="" sec:authorize="isAuthenticated()">목록으로 보기</a></li>
             <li><a href="/myProfile" title="" sec:authorize="isAuthenticated()">내 프로필</a></li>
+            <li><a href="/write" title="" sec:authorize="isAuthenticated()">글쓰기</a></li>
             <li><a href="/login" title="" sec:authorize="isAnonymous()">로그인</a></li>
-            <li><a href="/members/logout" title="" sec:authorize="isAuthenticated()">로그아웃</a></li>
             <li><a href="/contact" title="">문의하기</a></li>
             <li class="has-children" sec:authorize="hasAnyAuthority('ROLE_ADMIN')">
               <a href="#0" title="">관리자메뉴</a>
@@ -64,6 +64,8 @@
                 <li><a href="category.html">통계</a></li>
               </ul>
             </li>
+            <hr/ style = "border-color:rgb(125,153,161);">
+            <li><a href="/members/logout" title="" sec:authorize="isAuthenticated()" style="color: rgb(217,76,113);">로그아웃</a></li>
           </ul>
         </nav>
         <!-- end header__nav-wrap -->
