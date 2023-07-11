@@ -30,16 +30,12 @@
                             <div class="message form-field">
                                 <textarea name="cMessage" id="cMessage" class="full-width" placeholder="내용"></textarea>
                             </div>
-    						<div style="font-family: 'IBM Plex Sans', sans-serif;" class="form-field" th:each="num: ${#numbers.sequence(1,5)}">
-								<div class="col-md-12">
-								 	<label for="formFile" class="form-field" th:text="상품이미지 + ${num}"></label>
-  									<input class="form-field" type="file" id="itemImgFile" name="itemImgFile">
-								</div>
+    						<div style="font-family: 'IBM Plex Sans', sans-serif;" class="form-field file-form" >
 														
 							</div>
 							<div class="btn-group btn-group-sm form-group" role="group" aria-label="Small button group">
-								  <button type="button" class="btn btn-outline-primary" style="margin-right: 0; ">+</button>
-								  <button type="button" class="btn btn-outline-primary" style="margin-left: 0;">-</button>
+								  <button type="button" class="btn btn-outline-primary" style="margin-right: 0; " onclick="plusCount()">+</button>
+								  <button type="button" class="btn btn-outline-primary" style="margin-left: 0;" onclick="minusCount()">-</button>
 							</div>
                             <input name="submit" id="submit" class="btn btn--primary btn-wide btn--large full-width" value="글쓰기" type="submit">
                         </fieldset>
@@ -52,7 +48,41 @@
 <!-- 각 페이지의 스크립트가 작성될 위치 -->
 <th:block layout:fragment="script">
 	<script th:inline="javascript">
+		var count = 1;
+
+		$(document).ready(function () {
+			addFileForm();
+		});
 		
+		
+		function plusCount() {
+ 			if(count >= 5) {
+				count = 5;
+				++count;
+				alert("5개 이상 추가하실 수 없습니다.");
+				return;
+			} 
+ 			++count;
+			addFileForm()
+			
+			console.log(count);
+		}
+		
+		function minusCount() {
+			if(count <= 1 ) {
+				count = 1	;
+				return;
+			} else if (count == 6) {
+				count = 5;
+			}
+			$(`.num${count}`).remove();
+			--count;
+			console.log(count);
+		}
+		
+		function addFileForm() {
+				$(".file-form").append(`<div class="col-md-12 num${count}" > <label for="formFile" class="form-field num${count}" >이미지 ${count}</label><input class="form-field num${count}" type="file" id="itemImgFile" name="itemImgFile"></div>`);
+		}
 	</script>
 </th:block>
 
