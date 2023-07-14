@@ -71,9 +71,5 @@ public class MemberController {
 		return "member/myProfileModify";
 	}
 	
-	@GetMapping(value = "/write")
-	public String writePost() {
-		return "html/writePost";
-	}
 	
 }

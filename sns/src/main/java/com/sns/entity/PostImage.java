@@ -43,4 +43,10 @@ public class PostImage {
 	@Column(name = "rep_img_yn", nullable = false)
 	@Convert(converter = BooleanToYNConverter.class)
 	private boolean repImgYN;
+	
+	public void updatePotsImg(String oriImgName, String imgName, String imgUrl) {
+		this.oriImageName = oriImgName;
+		this.imageName = imgName;
+		this.imageUrl = imgUrl;
+	}
 }

@@ -6,8 +6,63 @@
 <!-- 각 페이지의 CSS가 작성될 위치 -->
 <th:block layout:fragment="css">
 	<style>
+		.fieldError{
+		margin-top:0px;
+	 	font-size: 12px;
+	 	color: red;
+		}
 		.s-content {
 			padding-left: 200px;
+		}
+		.switch-button {
+			position: relative;
+			display: inline-block;
+			width: 55px;
+			height: 30px;
+		}
+
+		.switch-button input {
+			opacity: 0;
+			width: 0;
+			height: 0;
+		}
+
+		.onoff-switch {
+			position: absolute;
+			cursor: pointer;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			border-radius: 20px;
+			background-color: #ccc;
+			box-shadow: inset 1px 5px 1px #999;
+			-webkit-transition: .4s;
+			transition: .4s;
+		}
+
+		.onoff-switch:before {
+			position: absolute;
+			content: "";
+			height: 22px;
+			width: 22px;
+			left: 4px;
+			bottom: 4px;
+			background-color: #fff;
+			-webkit-transition: .5s;
+			transition: .4s;
+			border-radius: 20px;
+		}
+
+		.switch-button input:checked + .onoff-switch {
+			background-color: #F2D522;
+			box-shadow: inset 1px 5px 1px #E3AE56;
+		}
+
+		.switch-button input:checked + .onoff-switch:before {
+			-webkit-transform: translateX(26px);
+			-ms-transform: translateX(26px);
+			transform: translateX(26px);
 		}
 	</style>
 </th:block>
@@ -15,33 +70,73 @@
 <div layout:fragment="content">
 	<div class="s-content content">
 		<main class="row content__page">
-                
-                <section class="column large-full entry format-standard">
-                    <div class="content__page-header">
-                        <h1 class="display-1">
-                        	글쓰기
-                        </h1>
-                    </div>   
-                    <form name="contactForm" id="contactForm" method="post" action="" autocomplete="off">
-                        <fieldset>
-                            <div class="form-field">
-                                <input name="cName" id="cName" class="full-width" placeholder="제목" value="" type="text">
-                            </div>
-                            <div class="message form-field">
-                                <textarea name="cMessage" id="cMessage" class="full-width" placeholder="내용"></textarea>
-                            </div>
-    						<div style="font-family: 'IBM Plex Sans', sans-serif;" class="form-field file-form" >
-														
-							</div>
-							<div class="btn-group btn-group-sm form-group" role="group" aria-label="Small button group">
-								  <button type="button" class="btn btn-outline-primary" style="margin-right: 0; " onclick="plusCount()">+</button>
-								  <button type="button" class="btn btn-outline-primary" style="margin-left: 0;" onclick="minusCount()">-</button>
-							</div>
-                            <input name="submit" id="submit" class="btn btn--primary btn-wide btn--large full-width" value="글쓰기" type="submit">
-                        </fieldset>
-                    </form> <!-- end form -->
-                </section>
-            </main>
+
+			<section class="column large-full entry format-standard">
+				<div class="content__page-header">
+					<h1 class="display-1">
+						글쓰기
+					</h1>
+				</div>
+				<!-- form start -->
+				<form name="postForm" id="postForm" method="post" action="/post/new" autocomplete="off"
+					enctype="multipart/form-data" th:object="${postFormDto}">
+					<fieldset>
+						<input type="hidden" th:field="*{id}">
+						<div class="form-field">
+							<input th:field="*{postSubject}" class="full-width" placeholder="제목" value="" type="text">
+							<p th:if="${#fields.hasErrors('postSubject')}" th:errors="*{postSubject}" class="fieldError">Incorrect Data</p>
+						</div>
+						<div class="message form-field">
+							<textarea th:field="*{postContent}" class="full-width" placeholder="내용"></textarea>
+							<p th:if="${#fields.hasErrors('postContent')}" th:errors="*{postContent}" class="fieldError">Incorrect Data</p>
+						</div>
+
+						<h3>관심사</h3>
+						개발
+						<label class="switch-button" for="postInterests.develop1">
+							<input type="checkbox" value="develop" th:field="*{postInterests.develop}">
+							<span class="onoff-switch"></span>
+						</label>
+						여행
+						<label class="switch-button" for="postInterests.travel">
+							<input type="checkbox" value="travel" th:field="*{postInterests.travel}" />
+							<span class="onoff-switch"></span>
+						</label>
+						동물
+						<label class="switch-button">
+							<input type="checkbox" value="animal" th:field="*{postInterests.animal}" />
+							<span class="onoff-switch"></span>
+						</label>
+						일상
+						<label class="switch-button">
+							<input type="checkbox" value="life" th:field="*{postInterests.life}" />
+							<span class="onoff-switch"></span>
+						</label>
+						음식
+						<label class="switch-button">
+							<input type="checkbox" value="food" th:field="*{postInterests.food}" />
+							<span class="onoff-switch"></span>
+						</label>
+
+						<hr>
+
+						<div style="font-family: 'IBM Plex Sans', sans-serif;" class="form-field file-form">
+
+						</div>
+						<div class="btn-group btn-group-sm form-group" role="group" aria-label="Small button group">
+							<button type="button" class="btn btn-outline-primary" style="margin-right: 0; "
+								onclick="plusCount()">+</button>
+							<button type="button" class="btn btn-outline-primary" style="margin-left: 0;"
+								onclick="minusCount()">-</button>
+						</div>
+						<input name="submit" id="submit" class="btn btn--primary btn-wide btn--large full-width" value="글쓰기"
+							type="submit">
+					</fieldset>
+					<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+				</form>
+				<!-- end form -->
+			</section>
+		</main>
 	</div>
 </div>
 
@@ -52,36 +147,42 @@
 
 		$(document).ready(function () {
 			addFileForm();
+			
+	    	var errorMessage = [[${errorMessage}]];
+	    	if(errorMessage != null){
+	        	alert(errorMessage);
+	    	}
+	    	
+			bindDomEvent(); //이벤트를 등록
 		});
-		
-		
+
+
 		function plusCount() {
- 			if(count >= 5) {
+			if (count >= 5) {
 				count = 5;
 				++count;
 				alert("5개 이상 추가하실 수 없습니다.");
 				return;
-			} 
- 			++count;
+			}
+			++count;
 			addFileForm()
-			
-			console.log(count);
+
 		}
-		
+
 		function minusCount() {
-			if(count <= 1 ) {
-				count = 1	;
+			if (count <= 1) {
+				count = 1;
 				return;
 			} else if (count == 6) {
 				count = 5;
 			}
 			$(`.num${count}`).remove();
 			--count;
-			console.log(count);
+
 		}
-		
+
 		function addFileForm() {
-				$(".file-form").append(`<div class="col-md-12 num${count}" > <label for="formFile" class="form-field num${count}" >이미지 ${count}</label><input class="form-field num${count}" type="file" id="itemImgFile" name="itemImgFile"></div>`);
+			$(".file-form").append(`<div class="col-md-12 num${count}" > <label for="formFile" class="form-field num${count}" >이미지 ${count}</label><input class="form-field num${count}" type="file" id="itemImgFile" name="itemImgFile"></div>`);
 		}
 	</script>
 </th:block>
