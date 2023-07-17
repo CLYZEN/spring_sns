@@ -16,7 +16,6 @@ import org.springframework.security.web.authentication.rememberme.JdbcTokenRepos
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import com.sns.service.RemembermeUserDetailService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -70,10 +69,11 @@ public class SecurityConfig {
 		//.rememberMe(Customizer.withDefaults());
 		.rememberMe(rememberMe -> rememberMe
 				.rememberMeParameter("remember-me")
-				.tokenValiditySeconds(3600)
+				.tokenValiditySeconds(86400*30)
 				.alwaysRemember(false)
 				.tokenRepository(tokenRepository())
 				.userDetailsService(userDetailsService)
+				//.userDetailsService(remembermeUserDetailService)
 				);
 				
 				

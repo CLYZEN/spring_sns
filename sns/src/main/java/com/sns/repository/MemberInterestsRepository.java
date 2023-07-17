@@ -5,7 +5,6 @@ import com.sns.entity.MemberInterests;
 import com.sns.id.MemberInterestsId;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface MemberInterestsRepository extends JpaRepository<MemberInterests, Member> {
-
-
+public interface MemberInterestsRepository extends JpaRepository<MemberInterests, Long> {
+	MemberInterests findByMember(Member member);
 }

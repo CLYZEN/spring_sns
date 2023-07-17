@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sns.entity.Member;
+import com.sns.entity.MemberInterests;
+import com.sns.repository.MemberInterestsRepository;
 import com.sns.repository.MemberRepository;
 
 
@@ -19,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 public class MemberService implements UserDetailsService{
 
 	private final MemberRepository memberRepository;
+	private final MemberInterestsRepository memberInterestsRepository;
 	
 	public Member saveMember(Member member) {
 		validateDuplicateMember(member);
@@ -51,5 +54,12 @@ public class MemberService implements UserDetailsService{
 				.build();
 	}
 	
+	// 진행중	
+	public MemberInterests loadMemberInterests(String email) {
+		Member member = memberRepository.findByEmail(email);
+		MemberInterests memberInterests = memberInterestsRepository.findByMember(member);
+		
+		return memberInterests;
+	}
 	
 }
