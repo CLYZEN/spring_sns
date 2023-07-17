@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8">
-  <title>Securex - CCTV Camera Website Template</title>
+  <title>무슨무슨 sns</title>
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
   <meta content="" name="keywords">
   <meta content="" name="description">
@@ -111,7 +111,7 @@
 
   <!-- Template Javascript -->
   <script th:src="@{/js/mainindex.js}"></script>
-
+	<script type="text/javascript" th:src="@{/js/cookie.js}"></script>
   <script>
     window.addEventListener('DOMContentLoaded', (event) => {
       document.body.style.overflow = 'hidden'; // body 요소의 스크롤바를 숨김
@@ -120,6 +120,14 @@
       var element = document.querySelector('.carousel-inner');
       element.style.overflow = 'hidden';
     });
+    
+    $(document).ready(function() {
+    	var rememberMe = getCookie("remember-me");
+		
+		if(rememberMe != null) {
+			location.href = "/main";
+		}
+    })
   </script>
 </body>
 

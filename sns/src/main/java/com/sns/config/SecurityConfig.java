@@ -1,19 +1,37 @@
 package com.sns.config;
 
+import javax.sql.DataSource;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
+import com.sns.service.RemembermeUserDetailService;
+
+import lombok.RequiredArgsConstructor;
 
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
+	
+	
+	//private final RemembermeUserDetailService remembermeUserDetailService;
+	
+	private final UserDetailsService userDetailsService;
+	
+	private final DataSource dataSource;
 	
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -49,7 +67,15 @@ public class SecurityConfig {
 		.exceptionHandling(handling -> handling // 4. 인증되지 않은 사용자가 리소스에 접근했을 때 설정 (ex. 로그인안했는데 order, cart 에 접근)
 				.authenticationEntryPoint(new CustomAuthenticationEntryPoint())
 				)
-		.rememberMe(Customizer.withDefaults());
+		//.rememberMe(Customizer.withDefaults());
+		.rememberMe(rememberMe -> rememberMe
+				.rememberMeParameter("remember-me")
+				.tokenValiditySeconds(3600)
+				.alwaysRemember(false)
+				.tokenRepository(tokenRepository())
+				.userDetailsService(userDetailsService)
+				);
+				
 				
 		return http.build();
 	}
@@ -58,4 +84,12 @@ public class SecurityConfig {
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
+	
+	public PersistentTokenRepository tokenRepository() {
+		JdbcTokenRepositoryImpl jdbcTokenRepository = new JdbcTokenRepositoryImpl();
+		jdbcTokenRepository.setDataSource(dataSource);
+		return jdbcTokenRepository;
+	}
+
+	
 }
