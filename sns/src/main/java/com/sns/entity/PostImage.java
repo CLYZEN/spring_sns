@@ -25,7 +25,7 @@ public class PostImage {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long image_no;
+	private Long imageNo;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "post_no")

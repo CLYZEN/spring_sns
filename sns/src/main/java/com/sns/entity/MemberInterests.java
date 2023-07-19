@@ -2,6 +2,7 @@ package com.sns.entity;
 
 import com.sns.converter.BooleanToYNConverter;
 
+import com.sns.dto.MemberInterestsDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -41,4 +42,15 @@ public class MemberInterests extends BaseTimeEntity {
 	@Convert(converter = BooleanToYNConverter.class)
 	@Column(nullable = false)
 	private boolean food; // 음식
+
+	public static MemberInterests createMemberInterests(MemberInterestsDto memberInterestsDto) {
+		MemberInterests memberInterests = new MemberInterests();
+		memberInterests.setLife(memberInterestsDto.isLife());
+		memberInterests.setFood(memberInterestsDto.isFood());
+		memberInterests.setAnimal(memberInterestsDto.isAnimal());
+		memberInterests.setTravel(memberInterests.isTravel());
+		memberInterests.setDevelop(memberInterests.isDevelop());
+
+		return memberInterests;
+	}
 }

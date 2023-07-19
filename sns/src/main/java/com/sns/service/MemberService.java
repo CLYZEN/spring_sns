@@ -61,5 +61,12 @@ public class MemberService implements UserDetailsService{
 		
 		return memberInterests;
 	}
-	
+
+	public Member findByEmail(String email) {
+
+		Member member = memberRepository.findByEmail(email);
+
+		return member;
+	}
+
 }

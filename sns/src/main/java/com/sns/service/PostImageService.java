@@ -1,5 +1,6 @@
 package com.sns.service;
 
+import com.sns.dto.PostImgDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -10,11 +11,14 @@ import com.sns.repository.PostImageRepository;
 
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class PostImageService {
-	private String itemImgLocation = "C:/shop/item";
+	//private String itemImgLocation = "C:/shop/item";
+	private String itemImgLocation = "/Users/seongchule/Documents/ezen_project/snsImg/item"; // for macos
 	private final PostImageRepository postImageRepository;
 	private final FileService fileService;
 	
@@ -33,5 +37,9 @@ public class PostImageService {
 		
 		postImage.updatePotsImg(oriImgName, imgName, imgUrl);
 		postImageRepository.save(postImage);
+	}
+
+	public List<PostImgDto> getImgList(Long postNo) {
+		return postImageRepository.findByPostPostNo(postNo);
 	}
 }

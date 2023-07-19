@@ -1,18 +1,13 @@
 package com.sns.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import com.sns.dto.ProfilePostDto;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -35,5 +30,33 @@ public class Post extends BaseEntity {
 	@Column(nullable = false, columnDefinition = "longtext")
 	@Lob
 	private String content; // 내용
-	
+
+	@OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	private List<PostImage> postImageList = new ArrayList<>();
+
+	public void addPostImage(PostImage postImage) {
+		this.postImageList.add(postImage);
+		postImage.setPost(this);
+	}
+
+	public static Post createPost(Member member, List<PostImage> postImageList) {
+		Post post = new Post();
+		post.setMember(member);
+
+		for(PostImage postImage : postImageList) {
+			post.addPostImage(postImage);
+		}
+
+		return post;
+	}
+
+	public ProfilePostDto switchProfilePostDto(Post post) {
+		ProfilePostDto profilePostDto = new ProfilePostDto();
+		profilePostDto.setPostNo(post.getPostNo());
+		profilePostDto.setSubject(post.getSubject());
+		profilePostDto.setContent(post.getContent());
+		profilePostDto.setRegDate(post.getRegTime());
+
+		return profilePostDto;
+	}
 }
