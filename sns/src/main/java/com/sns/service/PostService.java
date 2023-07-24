@@ -68,6 +68,7 @@ public class PostService {
 		boolean life = memberInterests.isLife();
 		boolean food = memberInterests.isFood();
 		Page<MainPostDto> postDtos = postRepository.findPostsByInterests(member.getMemberId(), develop, travel, animal, life, food, pageable);
+		//Page<PostFormDto> postDtos = postRepository.findPostsByInterests(member.getMemberId(), develop, travel, animal, life, food, pageable);
 
 
 		return postDtos;
@@ -76,20 +77,40 @@ public class PostService {
 	public List<ProfilePostDto> findMyPost(String email) {
 		Member member = memberRepository.findByEmail(email);
 
-		List<Post> postList = postRepository.findPostByMember(member);
+		List<Post> postList = postRepository.findByMember(member);
 
 		List<ProfilePostDto> profilePostDtoList = new ArrayList<>();
 
 		for(Post post : postList) {
 			ProfilePostDto profilePostDto = post.switchProfilePostDto(post);
 			List<PostImgDto> postImageList = postImageRepository.findByPostPostNo(post.getPostNo());
-
+			profilePostDto.setMember(member);
 			for(PostImgDto postImgDto : postImageList) {
+
 				profilePostDto.addPostImgDto(postImgDto);
-				profilePostDtoList.add(profilePostDto);
+
 			}
+			profilePostDtoList.add(profilePostDto);
 		}
 
 		return profilePostDtoList;
+	}
+
+	public Post articlePost(Long postNo) {
+		Post post = postRepository.findByPostNo(postNo);
+
+		return post;
+	}
+
+	public List<PostImgDto> articelPostImage(Long postNo) {
+		List<PostImgDto> postImgDtoList = postImageRepository.findByPostPostNo(postNo);
+		return postImgDtoList;
+	}
+
+	public Post findId(Long postId) {
+
+		Post post = postRepository.findById(postId).orElseThrow();
+
+		return post;
 	}
 }

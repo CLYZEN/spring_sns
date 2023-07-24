@@ -6,7 +6,7 @@
       <header class="s-header header" th:fragment="header">
        <div class="header__top">
           <div class="header__logo">
-            <a class="site-logo" href="main" sec:authorize="isAuthenticated()">
+            <a class="site-logo" href="/main" sec:authorize="isAuthenticated()">
               <img src="/images/logo.svg" alt="Homepage" />
             </a>
           </div>
@@ -51,7 +51,7 @@
 
         <nav class="header__nav-wrap">
           <ul class="header__nav">
-            <li class="current"><a href="main" title="" sec:authorize="isAuthenticated()">홈</a></li>
+            <li class="current"><a href="/main" title="" sec:authorize="isAuthenticated()">홈</a></li>
             <li><a href="/list" title="" sec:authorize="isAuthenticated()">목록으로 보기</a></li>
             <li><a href="/myProfile" title="" sec:authorize="isAuthenticated()">내 프로필</a></li>
             <li><a href="/post/new" title="" sec:authorize="isAuthenticated()">글쓰기</a></li>

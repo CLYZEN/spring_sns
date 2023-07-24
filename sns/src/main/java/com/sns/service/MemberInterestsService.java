@@ -2,6 +2,7 @@ package com.sns.service;
 
 import java.security.Principal;
 
+import com.sns.dto.MemberInterestsDto;
 import com.sns.repository.MemberRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,5 +38,10 @@ public class MemberInterestsService {
 
 		memberInterestsRepository.save(memberInterests);
 	}
-	
+
+	public void updateMemberInterests(MemberInterestsDto memberInterestsDto, Member member) {
+		MemberInterests memberInterests = memberInterestsRepository.findByMember(member);
+
+		memberInterests.updateMemberInterests(memberInterestsDto);
+	}
 }

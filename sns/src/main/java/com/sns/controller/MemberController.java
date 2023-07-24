@@ -1,9 +1,10 @@
 package com.sns.controller;
 
-import com.sns.dto.MemberInterestsDto;
-import com.sns.dto.ProfilePostDto;
+import com.sns.dto.*;
 import com.sns.entity.MemberInterests;
+import com.sns.repository.MemberRepository;
 import com.sns.service.MemberInterestsService;
+import com.sns.service.PostImageService;
 import com.sns.service.PostService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -13,12 +14,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import com.sns.dto.MemberFormDto;
 import com.sns.entity.Member;
 import com.sns.service.MemberService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
 import java.util.List;
@@ -31,6 +33,7 @@ public class MemberController {
 	private final PasswordEncoder passwordEncoder;
 	private final MemberInterestsService memberInterestsService;
 	private final PostService postService;
+	private final PostImageService postImageService;
 
 	@GetMapping(value="/members/login")
 	public String login(Model model) {
@@ -73,7 +76,9 @@ public class MemberController {
 		Member member = memberService.findByEmail(principal.getName());
 
 		List<ProfilePostDto> profilePostDtoList = postService.findMyPost(principal.getName());
+		List<PostImgDto> postImgDtoList = postImageService.findMyImages(member.getMemberId());
 
+		model.addAttribute("myImages", postImgDtoList);
 		model.addAttribute("posts", profilePostDtoList);
 		model.addAttribute("member",member);
 		model.addAttribute("memberInterests", memberInterests);
@@ -82,9 +87,32 @@ public class MemberController {
 	}
 	
 	@GetMapping(value = "/myProfileModify")
-	public String myProfileModify() {
+	public String myProfileModify(Principal principal,Model model) {
+		Member member = memberService.findByEmail(principal.getName());
+
+		model.addAttribute("profileFormDto",new ProfileFormDto());
+		model.addAttribute("member",member);
+
 		return "member/myProfileModify";
 	}
+	@PostMapping(value = "/myProfileModify")
+	public String myProfileModify(@Valid ProfileFormDto profileFormDto, BindingResult bindingResult,Principal principal,@RequestParam("itemImgFile") MultipartFile itemImgFile,Model model) {
+
+		if(bindingResult.hasErrors()) {
+			return "member/myProfileModify";
+		}
+
+		try {
+			memberService.updateProfile(profileFormDto,itemImgFile,principal.getName());
+		} catch(Exception e) {
+			e.printStackTrace();
+			model.addAttribute("errorMessage","프로필 수정 중 에러가 발생했습니다.");
+			return "member/myProfileModify";
+		}
+
+		return "redirect:/myProfile";
+	}
+
 	@GetMapping(value = "/interests")
 	public String selectInterests(Model model) {
 		model.addAttribute("memberInterestsDto", new MemberInterestsDto());
@@ -93,10 +121,17 @@ public class MemberController {
 	}
 	@PostMapping(value = "/interests")
 	public String insertInterests(Principal principal, @Valid MemberInterestsDto memberInterestsDto) {
+		MemberInterests memberInterest = memberInterestsService.loadMemberInterests(principal.getName());
+		if(memberInterest != null) {
+			Member member = memberService.findByEmail(principal.getName());
+			memberInterestsService.updateMemberInterests(memberInterestsDto,member);
+		} else {
+			MemberInterests memberInterests = MemberInterests.createMemberInterests(memberInterestsDto);
 
-		MemberInterests memberInterests = MemberInterests.createMemberInterests(memberInterestsDto);
+			memberInterestsService.insertMemberInterests(principal.getName(),memberInterests);
 
-		memberInterestsService.insertMemberInterests(principal.getName(),memberInterests);
+		}
+
 
 		return "redirect:/main";
 	}

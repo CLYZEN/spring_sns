@@ -6,23 +6,7 @@
 <!-- 각 페이지의 CSS가 작성될 위치 -->
 <th:block layout:fragment="css">
     <style>
-        /* Swiper 컨테이너에 가운데 정렬 스타일 적용 */
-        .swiper-container {
-            display: flex;
-            justify-content: center;
-        }
 
-        /* 이미지 컨테이너에 가운데 정렬 스타일 적용 */
-        .swiper-slide {
-            display: flex;
-            justify-content: center;
-        }
-
-        /* 이미지 가운데 정렬 스타일 적용 */
-        .swiper-slide img {
-            display: block;
-            margin: 0 auto;
-        }
     </style>
 </th:block>
 
@@ -33,19 +17,18 @@
             <div class="grid-sizer"></div>
 
             <th:block th:each="post, status: ${posts}">
-                <article class="masonry__brick entry format-standard animate-this" >
-                    <div class="entry__thumb">
-                        <swiper-container class="mySwiper" pagination="true" style="background: white">
-                            <a href="#" class="entry__thumb-link" >
-                                <swiper-slide><img style="margin: 0 auto;" th:src="${post.imageUrl}" th:alt="${post.oriImageName}"></swiper-slide>
-                            </a>
+                <article class="masonry__brick entry format-standard animate-this">
+                    <div class="entry__thumb" style="display: flex; justify-content: center; background-color: white;" >
+                        <swiper-container class="mySwiper" pagination="true" style="background: white;">
+
+                            <swiper-slide style="background-color: white;"><img th:src="${post.imageUrl}" th:alt="${post.oriImageName}" style="max-width: 100%;"></swiper-slide>
 
                         </swiper-container>
                     </div>
                     <div class="entry__text">
                         <div class="entry__header">
                             <h2 class="entry__title">
-                                <a href="single-standard.html" th:text="${post.subject}">글제목</a>
+                                <a th:href="@{ '/post/article/' + ${post.postNo}}" th:text="${post.subject}">글제목</a>
                             </h2>
                             <div class="entry__meta">
                     <span class="entry__meta-cat">
@@ -74,10 +57,10 @@
                         <a class="pgn__prev" href="#0" th:href="@{'/main/'+ ${posts.number - 1}}">다음</a>
                     </li>
                     <li th:each="page: ${#numbers.sequence(start, end)}"
-                        >
+                    >
                         <a class="pgn__num"
-                              th:href="@{'/main/' + ${page - 1}}"
-                              th:classappend="${posts.number eq page - 1}?'current':''">[[${page}]]</a>
+                           th:href="@{'/main/' + ${page - 1}}"
+                           th:classappend="${posts.number eq page - 1}?'current':''">[[${page}]]</a>
                     </li>
                     <li th:classappend="${posts.last}?'disabled'">
                         <a class="pgn__next" th:href="@{'/main/' + ${posts.number + 1}}">이전</a>

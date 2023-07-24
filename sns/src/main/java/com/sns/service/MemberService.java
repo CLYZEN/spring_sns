@@ -1,5 +1,7 @@
 package com.sns.service;
 
+import com.sns.dto.MemberInterestsDto;
+import com.sns.dto.ProfileFormDto;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -14,15 +16,19 @@ import com.sns.repository.MemberRepository;
 
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
+import org.thymeleaf.util.StringUtils;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class MemberService implements UserDetailsService{
 
+	private String profileImgLocation = "/Users/seongchule/Documents/ezen_project/snsImg/profile"; // for maco
 	private final MemberRepository memberRepository;
 	private final MemberInterestsRepository memberInterestsRepository;
-	
+	private final FileService fileService;
+
 	public Member saveMember(Member member) {
 		validateDuplicateMember(member);
 		
@@ -68,5 +74,29 @@ public class MemberService implements UserDetailsService{
 
 		return member;
 	}
+
+	public void updateProfile(ProfileFormDto profileFormDto, MultipartFile profileImgFile,String email) throws Exception {
+		String oriImgName = profileImgFile.getOriginalFilename();
+		String imgName = "";
+		String imgUrl = "";
+
+		Member member = memberRepository.findByEmail(email);
+
+		if(!StringUtils.isEmpty(oriImgName)) {
+			//oriImgName이 빈문자열이 아니라면 이미지 파일 업로드
+			imgName = fileService.uploadFile(profileImgLocation,
+					oriImgName, profileImgFile.getBytes());
+			imgUrl = "/images/profile/" + imgName;
+
+			profileFormDto.setProfileImgUrl(imgUrl);
+
+
+			member.updateMember(profileFormDto);
+		}
+
+
+	}
+
+
 
 }

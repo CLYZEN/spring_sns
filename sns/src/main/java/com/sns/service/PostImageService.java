@@ -42,4 +42,8 @@ public class PostImageService {
 	public List<PostImgDto> getImgList(Long postNo) {
 		return postImageRepository.findByPostPostNo(postNo);
 	}
+
+	public List<PostImgDto> findMyImages(Long memberId) {
+		return postImageRepository.findByMemberId(memberId);
+	}
 }

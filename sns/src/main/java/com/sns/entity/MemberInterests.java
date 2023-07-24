@@ -53,4 +53,12 @@ public class MemberInterests extends BaseTimeEntity {
 
 		return memberInterests;
 	}
+
+	public void updateMemberInterests(MemberInterestsDto memberInterestsDto) {
+		this.develop = memberInterestsDto.isDevelop();
+		this.life = memberInterestsDto.isLife();
+		this.food = memberInterestsDto.isFood();
+		this.animal = memberInterestsDto.isAnimal();
+		this.travel = memberInterestsDto.isTravel();
+	}
 }

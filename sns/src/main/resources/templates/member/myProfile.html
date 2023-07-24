@@ -1,92 +1,101 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{layouts/layout1}">
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout1}">
 
 <!-- 각 페이지의 CSS가 작성될 위치 -->
 <th:block layout:fragment="css">
-	<style>
-</style>
+    <style>
+        .media-wrap {
+            display: flex;
+            justify-content: center;
+        }
+
+        swiper-container {
+            text-align: center;
+        }
+
+        .swiper-slide img {
+            display: inline-block;
+        }
+    </style>
 </th:block>
 
 <div layout:fragment="content">
-	<div class="s-content content">
-		<main class="row content__page">
-			<section class="column large-full entry format-standard">
+    <div class="s-content content" >
+        <main class="row content__page">
+            <section class="column large-full entry format-standard">
+                <div class="media-wrap" style="padding-right: 350px">
+                    <swiper-container class="mySwiper" pagination="true">
+                        <swiper-slide th:each="myImage, status:${myImages}">
+                            <img th:src="${myImage.imageUrl}" th:alt="${myImage.oriImageName}"/>
+                        </swiper-slide>
+                    </swiper-container>
+                </div>
+    </div>
 
-				<div class="media-wrap">
-					<div>
-						<swiper-container class="mySwiper" pagination="true">
-						<swiper-slide> <img
-							src="./android-chrome-512x512.png" alt="" />사용자 올린 사진 리스트들..
-						10개까지</swiper-slide> <swiper-slide>Slide 2</swiper-slide> <swiper-slide>Slide
-						3</swiper-slide> <swiper-slide>Slide 4</swiper-slide> <swiper-slide>Slide
-						5</swiper-slide> <swiper-slide>Slide 6</swiper-slide> <swiper-slide>Slide
-						7</swiper-slide> <swiper-slide>Slide 8</swiper-slide> <swiper-slide>Slide
-						9</swiper-slide> </swiper-container>
-					</div>
-				</div>
-	</div>
-
-	<div class="content__page-header" style="display: flex; justify-content: space-between; align-items: center;">
-    	<h1 class="display-1" style="margin: 0 auto;" th:text="${member.nickname}">닉네임</h1>
+    <div class="content__page-header" style="display: flex; justify-content: space-between; align-items: center;">
+        <h1 class="display-1" style="margin: 0 auto;" th:text="${member.nickname}">닉네임</h1>
+        <img th:src="${member.profileImgUrl}" class="img-thumbnail" th:alt="${member.nickname}">
         <button type="button" class="btn btn-secondary" onclick="location.href='myProfileModify' ">수정하기</button>
 
-	</div>
-		<div style="display: flex">
-			<p>내 관심사 : </p>
-			<p th:if="${#strings.equals(memberInterests.develop, 'true')}" th:text="${'개발'}"></p>&nbsp;
-			<p th:if="${#strings.equals(memberInterests.travel, 'true')}" th:text="${'여행'}"></p>&nbsp;
-			<p th:if="${#strings.equals(memberInterests.life, 'true')}" th:text="${'일상'}"></p>&nbsp;
-			<p th:if="${#strings.equals(memberInterests.food, 'true')}" th:text="${'음식'}"></p>&nbsp;
-			<p th:if="${#strings.equals(memberInterests.animal, 'true')}" th:text="${'동물'}"></p>
-		<!-- end content__page-header -->
-		</div>
-	<p style="text-align: center;">소개글</p>
-	<hr>
-	</section>
-	<div class="masonry-wrap">
-		<div class="masonry">
-			<div class="grid-sizer"></div>
+    </div>
+    <div style="display: flex">
+        <p>내 관심사 : </p>
+        <p th:if="${#strings.equals(memberInterests.develop, 'true')}" th:text="${'개발'}"></p>&nbsp;
+        <p th:if="${#strings.equals(memberInterests.travel, 'true')}" th:text="${'여행'}"></p>&nbsp;
+        <p th:if="${#strings.equals(memberInterests.life, 'true')}" th:text="${'일상'}"></p>&nbsp;
+        <p th:if="${#strings.equals(memberInterests.food, 'true')}" th:text="${'음식'}"></p>&nbsp;
+        <p th:if="${#strings.equals(memberInterests.animal, 'true')}" th:text="${'동물'}"></p>
+        <!-- end content__page-header -->
+    </div>
+    <p style="text-align: center;" th:text="${member.memberContent}">소개글</p>
+    <hr>
+    </section>
+    <div class="masonry-wrap">
+        <div class="masonry">
+            <div class="grid-sizer"></div>
 
-			<article class="masonry__brick entry format-standard animate-this" th:each="post, status: ${posts}">
+            <article class="masonry__brick entry format-standard animate-this" th:each="post, status: ${posts}">
 
-				<div class="entry__thumb">
-					<swiper-container class="mySwiper" pagination="true" style="background: white">
-					<a href="#" class="entry__thumb-link" th:each="imgs, status : ${post.postImgDtoList}"> <swiper-slide><img
-							th:src="${imgs.imageUrl}" th:alt="${imgs.imageName}">
-						</swiper-slide>
-					</a> </swiper-container>
-				</div>
-				<div class="entry__text">
-					<div class="entry__header">
-						<h2 class="entry__title">
-							<a href="single-standard.html" th:text="${post.subject}">글제목</a>
-						</h2>
-						<div class="entry__meta">
+                <div class="entry__thumb">
+                    <swiper-container class="mySwiper" pagination="true" style="background: white">
+                            <th:block th:each="imgs, status : ${post.postImgDtoList}">
+                                <swiper-slide>
+                                    <img th:src="${imgs.imageUrl}" th:alt="${imgs.imageName}">
+                                </swiper-slide>
+                            </th:block>
+                    </swiper-container>
+                </div>
+                <div class="entry__text">
+                    <div class="entry__header">
+                        <h2 class="entry__title">
+                            <a href="single-standard.html" th:text="${post.subject}">글제목</a>
+                        </h2>
+                        <div class="entry__meta">
 							<span class="entry__meta-cat"> <a href="category.html" th:text="${post.regDate}">작성일</a>
 							</span>
-						</div>
-					</div>
-					<div class="entry__excerpt">
-						<p th:text="${post.content}">내용내용내용내용내용 - 현재 div 리스트 갯수만큼 반복</p>
-					</div>
-				</div>
-			</article>
-			<!-- end article -->
-		</div>
-		<!-- end masonry -->
-	</div>
-	</main>
+                        </div>
+                    </div>
+                    <div class="entry__excerpt">
+                        <p th:text="${post.content}">내용내용내용내용내용 - 현재 div 리스트 갯수만큼 반복</p>
+                    </div>
+                </div>
+            </article>
+            <!-- end article -->
+        </div>
+        <!-- end masonry -->
+    </div>
+    </main>
 </div>
 <!-- end s-content -->
 </div>
 
 <!-- 각 페이지의 스크립트가 작성될 위치 -->
 <th:block layout:fragment="script">
-	<script th:inline="javascript">
-		
-	</script>
+    <script th:inline="javascript">
+
+    </script>
 </th:block>
 
 </html>

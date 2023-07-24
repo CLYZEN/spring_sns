@@ -36,4 +36,5 @@ public class Comment extends BaseEntity {
 	@Lob
 	@Column(nullable = false, columnDefinition = "longtext")
 	private String content; // 댓글 내용
+
 }

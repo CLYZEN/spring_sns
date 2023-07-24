@@ -1,6 +1,7 @@
 package com.sns.entity;
 
 
+import com.sns.dto.ProfileFormDto;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.sns.constant.Role;
@@ -62,5 +63,11 @@ public class Member extends BaseEntity {
 		member.setRole(Role.USER);
 		
 		return member;
+	}
+
+	public void updateMember(ProfileFormDto profileFormDto) {
+		this.nickname = profileFormDto.getNickname();
+		this.memberContent = profileFormDto.getContent();
+		this.profileImgUrl = profileFormDto.getProfileImgUrl();
 	}
 }
