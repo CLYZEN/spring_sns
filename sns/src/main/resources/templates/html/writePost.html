@@ -81,14 +81,14 @@
 				<form name="postForm" id="postForm" method="post" action="/post/new" autocomplete="off"
 					enctype="multipart/form-data" th:object="${postFormDto}">
 					<fieldset>
-						<input type="hidden" th:field="*{id}">
+						<input type="hidden" th:field="*{postNo}">
 						<div class="form-field">
-							<input th:field="*{postSubject}" class="full-width" placeholder="제목" value="" type="text">
-							<p th:if="${#fields.hasErrors('postSubject')}" th:errors="*{postSubject}" class="fieldError">Incorrect Data</p>
+							<input th:field="*{subject}" class="full-width" placeholder="제목" value="" type="text">
+							<p th:if="${#fields.hasErrors('subject')}" th:errors="*{subject}" class="fieldError">Incorrect Data</p>
 						</div>
 						<div class="message form-field">
-							<textarea th:field="*{postContent}" class="full-width" placeholder="내용"></textarea>
-							<p th:if="${#fields.hasErrors('postContent')}" th:errors="*{postContent}" class="fieldError">Incorrect Data</p>
+							<textarea th:field="*{content}" class="full-width" placeholder="내용"></textarea>
+							<p th:if="${#fields.hasErrors('content')}" th:errors="*{content}" class="fieldError">Incorrect Data</p>
 						</div>
 
 						<h3>관심사</h3>

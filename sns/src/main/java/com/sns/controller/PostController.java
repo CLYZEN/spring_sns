@@ -4,31 +4,25 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
-import com.sns.dto.CommentFormDto;
-import com.sns.dto.MainPostDto;
-import com.sns.dto.PostImgDto;
+import com.sns.dto.*;
 import com.sns.entity.*;
-import com.sns.service.CommentService;
-import com.sns.service.MemberService;
-import com.sns.service.PostImageService;
+import com.sns.service.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-
-import com.sns.dto.PostFormDto;
-import com.sns.service.PostService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +35,7 @@ public class PostController {
 	private final MemberService memberService;
 	private final PostImageService postImageService;
 	private final CommentService commentService;
+	private final LikeService likeService;
 	@GetMapping(value = "/post/new")
 	public String newPost(Model model) {
 		
@@ -76,14 +71,26 @@ public class PostController {
 		Member member = memberService.findByEmail(principal.getName());
 		Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0 , 10);
 
-		Page<MainPostDto> posts =  postService.findPostsByMemberInterests(member,pageable);
+		Page<Post> posts =  postService.findPostsByMemberInterests(member,pageable);
 		//Page<PostFormDto> posts =  postService.findPostsByMemberInterests(member,pageable);
 
-		List<MainPostDto> dtos = posts.getContent();
-		//List<PostFormDto> dtos = posts.getContent();
 
+		List<Boolean> likeStatusList = new ArrayList<>();
+		List<CompletableFuture<Long>> likeCountList = new ArrayList<>();
+		for (Post post : posts) {
+			boolean liked = likeService.checkLike(post.getPostNo(),member.getMemberId());
+			CompletableFuture<Long> likeCount = likeService.countLike(post.getPostNo());
+			likeStatusList.add(liked);
+			likeCountList.add(likeCount);
+		}
 
+		List<Long> resolvedLikeCountList = likeCountList.stream()
+				.map(CompletableFuture::join)
+				.collect(Collectors.toList());
 
+		model.addAttribute("likeCountList", resolvedLikeCountList);
+		model.addAttribute("likeStatusList", likeStatusList);
+		model.addAttribute("member",member);
 		model.addAttribute("posts",posts);
 		model.addAttribute("maxPage",5);
 
@@ -95,14 +102,20 @@ public class PostController {
 
 		Post post = postService.articlePost(postNo);
 		List<PostImgDto> postImgDtoList = postService.articelPostImage(postNo);
+		Member member = memberService.findByEmail(principal.getName());
+
+		boolean liked = likeService.checkLike(post.getPostNo(),member.getMemberId());
 
 		/* 댓글 페이징 관련 */
 		Page<Comment> comments = commentService.getPostComments(page,post);
-		model.addAttribute("comments",comments);
 
+		model.addAttribute("liked",liked);
+		model.addAttribute("comments",comments);
+		model.addAttribute("member",member);
 		model.addAttribute("post",post);
 		model.addAttribute("postImgDtos", postImgDtoList);
 		model.addAttribute("commentFormDto", new CommentFormDto());
+		model.addAttribute("reportPostDto", new ReportPostDto());
 
 		return "post/article";
 	}
@@ -114,6 +127,38 @@ public class PostController {
 		commentService.saveComment(commentFormDto);
 
 		return "redirect:/post/article/" + postNo;
+	}
+
+	@PostMapping(value = "reportPost/{postNo}")
+	public String reportPost(@Valid ReportPostDto reportPostDto, BindingResult bindingResult,Model model,@PathVariable Long postNo, Principal principal) {
+		postService.reportPost(principal.getName(),postNo,reportPostDto);
+
+		return "redirect:/post/article/" + postNo;
+	}
+
+	@DeleteMapping("/delete/{postNo}")
+	public @ResponseBody ResponseEntity deletePost(@PathVariable("postNo") Long postNo, Principal principal) {
+
+		if(!postService.validatePost(postNo,principal.getName())) {
+			return new ResponseEntity<String>("게시글 삭제 권한이 없습니다,", HttpStatus.FORBIDDEN);
+		}
+
+		postService.deletePost(postNo);
+
+		return new ResponseEntity<Long>(postNo, HttpStatus.OK);
+	}
+
+	@GetMapping(value = "/postModify/{postNo}")
+	public String modifyPost(@PathVariable("postNo") Long postNo, Principal principal,Model model) {
+
+		if(!postService.validatePost(postNo,principal.getName())) {
+			model.addAttribute("errorMessage", "게시글 수정 권한이 없습니다!");
+			return "redirect:/main";
+		}
+		PostFormDto postFormDto = postService.getPostDtl(postNo);
+
+		model.addAttribute("postFormDto", postFormDto);
+		return "post/modifyPost";
 	}
 
 }

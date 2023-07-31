@@ -10,16 +10,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import com.sns.entity.Member;
 import com.sns.service.MemberService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
@@ -134,5 +131,23 @@ public class MemberController {
 
 
 		return "redirect:/main";
+	}
+
+	@GetMapping(value = "/member/detail/{memberId}")
+	public String memberDetail(@PathVariable("memberId") Long memberId,Model model,Principal principal) {
+
+		Member member = memberService.findById(memberId);
+		List<ProfilePostDto> profilePostDtoList = postService.findMyPost(member.getEmail());
+		List<PostImgDto> postImgDtoList = postImageService.findMyImages(member.getMemberId());
+		MemberInterests memberInterests = memberInterestsService.loadMemberInterests(member.getEmail());
+		Member nowMember = memberService.findByEmail(principal.getName());
+
+		model.addAttribute("nowMember", nowMember);
+		model.addAttribute("myImages", postImgDtoList);
+		model.addAttribute("posts", profilePostDtoList);
+		model.addAttribute("member", member);
+		model.addAttribute("memberInterests", memberInterests);
+
+		return "member/userDetail";
 	}
 }

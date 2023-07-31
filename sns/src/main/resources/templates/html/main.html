@@ -2,10 +2,18 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/layout1}">
-
+<head>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+</head>
 <!-- 각 페이지의 CSS가 작성될 위치 -->
 <th:block layout:fragment="css">
     <style>
+        /* 클릭 시 빨간색으로 변하는 하트 아이콘의 스타일 */
+        .red-heart {
+            color: red;
+            padding: 5px;
+        }
 
     </style>
 </th:block>
@@ -16,12 +24,14 @@
         <div class="masonry">
             <div class="grid-sizer"></div>
 
-            <th:block th:each="post, status: ${posts}">
+            <th:block th:each="post, status: ${posts}" th:attr="data-postno=${post.postNo}">
                 <article class="masonry__brick entry format-standard animate-this">
-                    <div class="entry__thumb" style="display: flex; justify-content: center; background-color: white;" >
+                    <div class="entry__thumb" style="display: flex; justify-content: center; background-color: white;">
                         <swiper-container class="mySwiper" pagination="true" style="background: white;">
 
-                            <swiper-slide style="background-color: white;"><img th:src="${post.imageUrl}" th:alt="${post.oriImageName}" style="max-width: 100%;"></swiper-slide>
+                            <swiper-slide style="background-color: white;" th:each="img, status:${post.postImageList}"><img th:src="${img.imageUrl}"
+                                                                                th:alt="${img.oriImageName}"
+                                                                                style="max-width: 100%;"></swiper-slide>
 
                         </swiper-container>
                     </div>
@@ -29,15 +39,21 @@
                         <div class="entry__header">
                             <h2 class="entry__title">
                                 <a th:href="@{ '/post/article/' + ${post.postNo}}" th:text="${post.subject}">글제목</a>
+                                <i class="far fa-heart" id="heartIcon" style="float: right; cursor: pointer; color: red;"
+                                   th:class="${likeStatusList[__${status.index}__]} ? 'fas fa-heart' : 'far fa-heart'" th:data-postno="${post.postNo}" onclick="toggleLike(this)"></i>
+                                <span style="float: right; font-size: 12px;" th:text="${likeCountList[__${status.index}__]}"></span>
                             </h2>
                             <div class="entry__meta">
                     <span class="entry__meta-cat">
-                      <a href="category.html" th:text="${post.regTime}">작성일</a>
+                      <a href="#" th:text="${#temporals.format(post.regTime, 'yyyy-MM-ss HH:mm:ss')}">작성일</a>
                     </span>
+                                <span>
+                                    <a style="float: right" th:href="@{|/member/detail/${post.member.memberId}|}" th:text="${post.member.nickname}"></a>
+                                </span>
                             </div>
                         </div>
                         <div class="entry__excerpt">
-                            <p th:text="${post.content}">내용내용내용내용내용 - 현재 div 리스트 갯수만큼 반복</p>
+                            <p th:text="${#strings.length(post.content) &lt; 100 ? post.content : #strings.substring(post.content, 0, 100) + '...'}"></p>
                         </div>
                     </div>
                 </article>
@@ -70,11 +86,48 @@
         </div>
     </div>
     <!-- end s-content -->
+
+
+
+
 </div>
 
 <!-- 각 페이지의 스크립트가 작성될 위치 -->
 <th:block layout:fragment="script">
     <script th:inline="javascript">
+        function toggleLike(heartIcon) {
+            var isLiked = heartIcon.classList.contains('fas');
+            var postNo = heartIcon.getAttribute('data-postno');
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+
+            var url = isLiked ? "/deleteLike" : "/addLike";
+            var method = isLiked ? "DELETE" : "POST";
+
+            $.ajax({
+                url: url,
+                type: method,
+                beforeSend: function(xhr) {
+                    xhr.setRequestHeader(header, token);
+                },
+                data: JSON.stringify({ postNo: postNo, memberId: /*[[${member.memberId}]]*/ 0 }),
+                contentType: "application/json",
+                success: function(result) {
+                    // 요청 성공 처리
+                    console.log("좋아요 " + (isLiked ? "취소" : "추가") + " 성공");
+                    // 좋아요 상태 토글
+                    heartIcon.classList.toggle('fas');
+                    heartIcon.classList.toggle('far');
+                },
+                error: function(jqXHR, status, error) {
+                    // 오류 처리
+                    alert("에러 발생 다시 시도해 주세요!");
+                    console.error("좋아요 " + (isLiked ? "취소" : "추가") + " 오류: " + error);
+                }
+            });
+        }
+
+
 
     </script>
 </th:block>

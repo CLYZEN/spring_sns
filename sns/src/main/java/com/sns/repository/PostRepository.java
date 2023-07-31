@@ -87,4 +87,7 @@ public interface PostRepository extends JpaRepository<Post, Long>{
 
 
     Post findByPostNo(Long postNo);
+
+
+    Page<Post> findAll(Pageable pageable);
 }

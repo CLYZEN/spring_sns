@@ -33,8 +33,22 @@ public class IndexController {
 	    }
 		//return "index";
 	}
-	
-	
+/*
+	@GetMapping(value = "/")
+	public String index(Principal principal, Model model) {
+		if (principal != null && principal.getName() != null) {
+			// 관심사를 아직 선택하지 않았을 때
+			if (memberInterestsRepository.findByMember(memberRepository.findByEmail(principal.getName())) == null) {
+				model.addAttribute("memberInterestsDto", new MemberInterestsDto());
+				return "member/selectMemberInterests";
+			} else {
+				return "redirect:/main";
+			}
+		} else {
+			return "index";
+		}
+	}
+	*/
 	@GetMapping(value = "/contact")
 	public String contact() {
 		return "html/contact";

@@ -34,6 +34,12 @@ public class Post extends BaseEntity {
 	@OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	private List<PostImage> postImageList = new ArrayList<>();
 
+	@OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, fetch =  FetchType.LAZY, orphanRemoval = true)
+	private List<ReportPost> reportPostList = new ArrayList<>();
+
+	@OneToOne(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+	private PostInterests postInterests;
+
 	public void addPostImage(PostImage postImage) {
 		this.postImageList.add(postImage);
 		postImage.setPost(this);

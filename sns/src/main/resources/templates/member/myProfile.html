@@ -36,20 +36,29 @@
 
     <div class="content__page-header" style="display: flex; justify-content: space-between; align-items: center;">
         <h1 class="display-1" style="margin: 0 auto;" th:text="${member.nickname}">닉네임</h1>
-        <img th:src="${member.profileImgUrl}" class="img-thumbnail" th:alt="${member.nickname}">
-        <button type="button" class="btn btn-secondary" onclick="location.href='myProfileModify' ">수정하기</button>
+        <img th:if="${member.profileImgUrl} != null" th:src="${member.profileImgUrl}" class="img-thumbnail" th:alt="${member.nickname}">
+        <img th:if="${member.profileImgUrl} == null" src="/images/profile/행복꿀벌.png" class="img-thumbnail" alt="행복꿀벌">
 
+        <button type="button" class="btn btn-secondary"
+                onclick="location.href='myProfileModify' ">수정하기</button>
+
+        </hr>
     </div>
     <div style="display: flex">
-        <p>내 관심사 : </p>
-        <p th:if="${#strings.equals(memberInterests.develop, 'true')}" th:text="${'개발'}"></p>&nbsp;
-        <p th:if="${#strings.equals(memberInterests.travel, 'true')}" th:text="${'여행'}"></p>&nbsp;
-        <p th:if="${#strings.equals(memberInterests.life, 'true')}" th:text="${'일상'}"></p>&nbsp;
-        <p th:if="${#strings.equals(memberInterests.food, 'true')}" th:text="${'음식'}"></p>&nbsp;
-        <p th:if="${#strings.equals(memberInterests.animal, 'true')}" th:text="${'동물'}"></p>
+        <p class="entry__tags">
+          <span class="entry__tag-list">
+            <a th:if="${#strings.equals(memberInterests.develop, 'true')}" th:text="${'개발'}"></a>&nbsp;
+            <a th:if="${#strings.equals(memberInterests.travel, 'true')}" th:text="${'여행'}"></a>&nbsp;
+            <a th:if="${#strings.equals(memberInterests.life, 'true')}" th:text="${'일상'}"></a>&nbsp;
+            <a th:if="${#strings.equals(memberInterests.food, 'true')}" th:text="${'음식'}"></a>&nbsp;
+            <a th:if="${#strings.equals(memberInterests.animal, 'true')}" th:text="${'동물'}"></a>
+          </span>
+        </p>
         <!-- end content__page-header -->
     </div>
-    <p style="text-align: center;" th:text="${member.memberContent}">소개글</p>
+    <hr>
+    <p style="text-align: center;" th:if="${member.memberContent} != null" th:text="${member.memberContent}">소개글</p>
+    <p style="text-align: center;" th:if="${member.memberContent} == null" >아직 소개글을 작성하지 않은 사용자입니다.</p>
     <hr>
     </section>
     <div class="masonry-wrap">
@@ -70,15 +79,16 @@
                 <div class="entry__text">
                     <div class="entry__header">
                         <h2 class="entry__title">
-                            <a href="single-standard.html" th:text="${post.subject}">글제목</a>
+                            <a th:href="'/post/article/'+${post.postNo}" th:text="${post.subject}">글제목</a>
                         </h2>
                         <div class="entry__meta">
-							<span class="entry__meta-cat"> <a href="category.html" th:text="${post.regDate}">작성일</a>
+							<span class="entry__meta-cat"> <a href="#" th:text="${#temporals.format(post.regDate, 'yyyy-MM-ss HH:mm:ss')}">작성일</a>
 							</span>
                         </div>
+
                     </div>
                     <div class="entry__excerpt">
-                        <p th:text="${post.content}">내용내용내용내용내용 - 현재 div 리스트 갯수만큼 반복</p>
+                        <p th:text="${#strings.length(post.content) &lt; 100 ? post.content : #strings.substring(post.content, 0, 100) + '...'}"></p>
                     </div>
                 </div>
             </article>

@@ -52,7 +52,7 @@
         <nav class="header__nav-wrap">
           <ul class="header__nav">
             <li class="current"><a href="/main" title="" sec:authorize="isAuthenticated()">홈</a></li>
-            <li><a href="/list" title="" sec:authorize="isAuthenticated()">목록으로 보기</a></li>
+           <!-- <li><a href="/list" title="" sec:authorize="isAuthenticated()">목록으로 보기</a></li> -->
             <li><a href="/myProfile" title="" sec:authorize="isAuthenticated()">내 프로필</a></li>
             <li><a href="/post/new" title="" sec:authorize="isAuthenticated()">글쓰기</a></li>
             <li><a href="/login" title="" sec:authorize="isAnonymous()">로그인</a></li>
@@ -60,7 +60,7 @@
             <li class="has-children" sec:authorize="hasAnyAuthority('ROLE_ADMIN')">
               <a href="#0" title="">관리자메뉴</a>
               <ul class="sub-menu">
-                <li><a href="category.html">신고 목록</a></li>
+                <li><a href="/admin/reportList">신고 목록</a></li>
                 <li><a href="category.html">통계</a></li>
               </ul>
             </li>

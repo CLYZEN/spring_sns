@@ -9,6 +9,16 @@
 <!-- 각 페이지의 CSS가 작성될 위치 -->
 <th:block layout:fragment="css">
     <style>
+        .content__page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .center-title {
+            flex: 1;
+            text-align: center;
+        }
     </style>
 </th:block>
 
@@ -28,13 +38,83 @@
                     </div>
                 </div>
 
-                <div class="content__page-header">
-                    <h1 class="display-1" th:text="${post.subject}">글제목</h1>
+                <div class="content__page-header d-flex justify-content-between align-items-center">
+                    <h1 class="display-1 center-title" th:text="${post.subject}">글제목</h1>
+                    <div class="btn-group"> <!-- Removed d-flex and justify-content-end -->
+                        <button type="button" class="btn btn-danger dropdown-toggle" data-bs-toggle="dropdown"
+                                aria-expanded="false" style="width: 100px; height: 50px;">
+                            ...
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end"> <!-- Added dropdown-menu-end -->
+                            <li data-bs-toggle="modal" data-bs-target="#reportModal"><a class="dropdown-item"
+                                                                                        href="#">신고하기</a></li>
+                            <li><a class="dropdown-item"
+                                   th:if="${#strings.equals(post.member.memberId,member.memberId)}"
+                                   th:value="${post.postNo}" onclick="deletePost()">삭제하기</a></li>
+                            <li><a class="dropdown-item"
+                                   th:if="${#strings.equals(post.member.memberId,member.memberId)}"
+                                   onclick="moveModify()">수정하기</a></li>
+                        </ul>
+                    </div>
+                    <!-- 신고하기 Modal -->
+                    <div class="modal fade" id="reportModal" tabindex="-1"
+                         aria-labelledby="reportModalLabel" aria-hidden="true">
+
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="exampleModalLabel">신고하기</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                </div>
+                                <form th:action="'/reportPost/' + ${post.postNo}" th:object="${reportPostDto}"
+                                      method="post" class="reportReason">
+                                    <div class="modal-body">
+                                        <div class="mb-3">
+                                            <input type="hidden" th:field="*{reportPostNo}" th:value="${post.postNo}">
+                                            <label th:for="*{reportReason}" class="form-label">신고 사유를 입력해주세요! (30자
+                                                이내)</label>
+                                            <div class="input-group">
+                                                            <span class="input-group-text"
+                                                                  id="basic-addon3">사유 : </span>
+                                                <input type="text" class="form-control" th:field="*{reportReason}"
+                                                       aria-describedby="basic-addon3 basic-addon4"
+                                                       maxlength="30">
+                                                <span th:if="${#fields.hasErrors('reportReason')}"
+                                                      th:errors="*{reportReason}" class="fieldError"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">닫기
+                                        </button>
+                                        <button onclick="report()" class="btn btn-primary">신고</button>
+                                    </div>
+                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 신고하기 Modal end -->
                 </div>
+                <hr>
                 <!-- end content__page-header -->
 
                 <p th:text="${post.content}">본문... 현재 보이는 한칸 반복 - 댓글은 페이징처리</p>
-
+                <hr>
+                <p class="entry__tags">
+                  <span class="entry__tag-list">
+                    <a th:if="${#strings.equals(post.postInterests.develop, 'true')}" th:text="${'개발'}"></a>&nbsp;
+                    <a th:if="${#strings.equals(post.postInterests.travel, 'true')}" th:text="${'여행'}"></a>&nbsp;
+                    <a th:if="${#strings.equals(post.postInterests.life, 'true')}" th:text="${'일상'}"></a>&nbsp;
+                    <a th:if="${#strings.equals(post.postInterests.food, 'true')}" th:text="${'음식'}"></a>&nbsp;
+                    <a th:if="${#strings.equals(post.postInterests.animal, 'true')}" th:text="${'동물'}"></a>
+                  </span>
+                    <i class="far fa-heart" id="heartIcon" style="float: right; cursor: pointer; color: red;"
+                       th:class="${liked ? 'fas fa-heart' : 'far fa-heart'}" th:data-postno="${post.postNo}" onclick="toggleLike(this)"></i>
+                </p>
                 <div class="comments-wrap">
                     <div id="comments" class="column large-12">
 
@@ -44,16 +124,20 @@
                         <ol class="commentlist">
                             <li class="depth-1 comment" th:each="comment, status:${comments.getContent()}">
                                 <div class="comment__avatar">
-                                    <img class="avatar" th:src="${comment.member.profileImgUrl}" alt=""
+                                    <img class="avatar" th:if="${comment.member.profileImgUrl != null}"
+                                         th:src="${comment.member.profileImgUrl}" alt=""
+                                         width="50" height="50"/>
+                                    <img class="avatar" th:if="${comment.member.profileImgUrl == null}"
+                                         src="/images/profile/행복꿀벌.png" alt="기본프로필"
                                          width="50" height="50"/>
                                 </div>
 
                                 <div class="comment__content">
                                     <div class="comment__info">
-                                        <div class="comment__author" th:text="${comment.member.nickname}">닉네임</div>
+                                       <a th:href="@{|/member/detail/${comment.member.memberId}|}"> <div class="comment__author" th:text="${comment.member.nickname}" >닉네임</div></a>
 
                                         <div class="comment__meta">
-                                            <div class="comment__time" th:text="${comment.regTime}">작성일</div>
+                                            <div class="comment__time" th:text="${#temporals.format(comment.regTime, 'yyyy-MM-dd HH:mm:ss')}">작성일</div>
                                             <div class="comment__reply"></div>
                                         </div>
                                     </div>
@@ -64,8 +148,9 @@
 
 
                                 </div>
-
+                                <hr>
                             </li>
+
                             <!-- end comment level 1 -->
                             <div class="row" th:if="${!comments.isEmpty()}">
                                 <div class="column large-full">
@@ -74,10 +159,10 @@
                                             <li th:classappend="${comments.hasPrevious} ? '' : 'disabled' ">
                                                 <a class="pgn__prev" th:href="@{|?page=${comments.number-1}|}">Prev</a>
                                             </li>
-                                            <li th:each="page: ${#numbers.sequence(0, comments.getTotalPages()-1)}"
-                                                th:if="${page >= comments.number-5 and page <= comments.number+5}"
-                                                th:classappend="${page == comments.number} ? 'active'">
-                                                <a class="pgn__num current page" th:href="@{|?page=${page}|}" th:text="${page} + 1">1</a>
+                                            <li th:each="page: ${#numbers.sequence(0, comments.getTotalPages()-1)}">
+                                                <a class="pgn__num" th:href="@{|?page=${page}|}" th:text="${page} + 1"
+                                                   th:if="${page >= comments.number-5 and page <= comments.number+5}"
+                                                   th:classappend="${page == comments.number} ? 'current'">1</a>
                                             </li>
                                             <li th:classappend="${!comments.hasNext} ? '' : 'disabled'">
                                                 <a class="pgn__next" th:href="@{|?page=${comments.number+1}|}">Next</a>
@@ -107,7 +192,7 @@
                                         </div>
                                         <input name="submit" id="submit"
                                                class="btn btn--primary btn-wide btn--large full-width"
-                                               value="전송" type="submit"/>
+                                               value="전송" onclick="checkComment()"/>
                                     </div>
                                 </fieldset>
                             </form>
@@ -125,7 +210,109 @@
     <!-- 각 페이지의 스크립트가 작성될 위치 -->
     <th:block layout:fragment="script">
         <script th:inline="javascript">
+            $(document).ready(function () {
 
+                var errorMessage = [[${errorMessage}]];
+                if (errorMessage != null) {
+                    alert(errorMessage);
+                }
+
+                bindDomEvent(); //이벤트를 등록
+            });
+
+            function report() {
+                let postNo = [[${post.postNo}]]
+
+                if ($('#reportReason') == null || $('#reportReason').empty()) {
+                    alert("신고 내용을 입력해주세요 !");
+                    location.href = '/post/article/' + postNo;
+                    return;
+                }
+                $('.reportForm').submit();
+            }
+
+            function deletePost() {
+                let postNo = [[${post.postNo}]]
+                const deleteConf = confirm("삭제하시겠습니까?");
+                if (!deleteConf) return; //취소버튼 누르면
+
+                var token = $("meta[name='_csrf']").attr("content");
+                var header = $("meta[name='_csrf_header']").attr("content");
+
+                //request URL
+                var url = "/delete/" + postNo;
+
+
+                $.ajax({
+                    url: url, //request URL
+                    type: "DELETE", //전송방식
+                    contentType: "application/json",
+                    beforeSend: function (xhr) {
+                        //데이터를 전송하기 전에 헤더에 csrf 값을 설정
+                        xhr.setRequestHeader(header, token);
+                    },
+                    dataType: "json",
+                    cache: false,
+                    success: function (result, status) {
+                        location.href = '/main';
+                    },
+                    error: function (jqXHR, status, error) {
+                        if (jqXHR.status == '401') {
+                            alert('로그인 후 이용해주세요.');
+                            location.href = '/members/login';
+                        } else {
+                            alert(jqXHR.responseText);
+                        }
+                    }
+                });
+            }
+
+            function moveModify() {
+                let postNo = [[${post.postNo}]]
+                location.href = '/postModify/' + postNo;
+            }
+
+            function checkComment() {
+                let commnet = $('#cMessage');
+
+                if(commnet == null || commnet.empty()) {
+                    alert("댓글을 입력해주세요!");
+                    return;
+                }
+                $('#commentForm').submit();
+            }
+
+            function toggleLike(heartIcon) {
+                var isLiked = heartIcon.classList.contains('fas');
+                var postNo = [[${post.postNo}]]
+                var token = $("meta[name='_csrf']").attr("content");
+                var header = $("meta[name='_csrf_header']").attr("content");
+
+                var url = isLiked ? "/deleteLike" : "/addLike";
+                var method = isLiked ? "DELETE" : "POST";
+
+                $.ajax({
+                    url: url,
+                    type: method,
+                    beforeSend: function(xhr) {
+                        xhr.setRequestHeader(header, token);
+                    },
+                    data: JSON.stringify({ postNo: postNo, memberId: /*[[${member.memberId}]]*/ 0 }),
+                    contentType: "application/json",
+                    success: function(result) {
+                        // 요청 성공 처리
+                        console.log("좋아요 " + (isLiked ? "취소" : "추가") + " 성공");
+                        // 좋아요 상태 토글
+                        heartIcon.classList.toggle('fas');
+                        heartIcon.classList.toggle('far');
+                    },
+                    error: function(jqXHR, status, error) {
+                        // 오류 처리
+                        alert("에러 발생 다시 시도해 주세요!");
+                        console.error("좋아요 " + (isLiked ? "취소" : "추가") + " 오류: " + error);
+                    }
+                });
+            }
         </script>
     </th:block>
 </html>

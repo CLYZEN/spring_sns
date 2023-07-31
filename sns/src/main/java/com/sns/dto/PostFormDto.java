@@ -18,13 +18,13 @@ import lombok.Setter;
 public class PostFormDto {
 	
 	
-	private Long id;
+	private Long postNo;
 	
 	@NotBlank(message = "제목은 비어있을 수 없습니다.")
-	private String postSubject;
+	private String subject;
 	
 	@NotBlank(message = "내용은 비어있을 수 없습니다.")
-	private String postContent;
+	private String content;
 	
 	private PostInterests postInterests;
 	

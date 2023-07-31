@@ -89,12 +89,15 @@ public class MemberService implements UserDetailsService{
 			imgUrl = "/images/profile/" + imgName;
 
 			profileFormDto.setProfileImgUrl(imgUrl);
-
-
 			member.updateMember(profileFormDto);
+			return;
 		}
+		member.updateMember(profileFormDto);
 
+	}
 
+	public Member findById(Long memberId) {
+		return memberRepository.findById(memberId).orElseThrow();
 	}
 
 

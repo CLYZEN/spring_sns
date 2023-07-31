@@ -19,4 +19,5 @@ public interface PostImageRepository extends JpaRepository<PostImage, Long>{
            " from Post p, Member m " +
            " where p.member.memberId = :memberId)")
     List<PostImgDto> findByMemberId(@Param("memberId") Long memberId);
+
 }
