@@ -41,7 +41,7 @@
                                 <a th:href="@{ '/post/article/' + ${post.postNo}}" th:text="${post.subject}">글제목</a>
                                 <i class="far fa-heart" id="heartIcon" style="float: right; cursor: pointer; color: red;"
                                    th:class="${likeStatusList[__${status.index}__]} ? 'fas fa-heart' : 'far fa-heart'" th:data-postno="${post.postNo}" onclick="toggleLike(this)"></i>
-                                <span style="float: right; font-size: 12px;" th:text="${likeCountList[__${status.index}__]}"></span>
+                                <span style="float: right; font-size: 12px;"  th:text="${likeCountList[__${status.index}__]}"></span>
                             </h2>
                             <div class="entry__meta">
                     <span class="entry__meta-cat">

@@ -64,7 +64,7 @@ public class MemberController {
 			return "member/login";
 		}
 		
-		return "member/selectMemberInterests";
+		return "member/login";
 	}
 	
 	@GetMapping(value ="/myProfile")

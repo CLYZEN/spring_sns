@@ -8,6 +8,7 @@ import com.sns.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +17,7 @@ import java.util.concurrent.CompletableFuture;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@EnableAsync
 public class LikeServiceImpl implements LikeService{
     private final PostLikeRepository postLikeRepository;
     private final MemberRepository memberRepository;

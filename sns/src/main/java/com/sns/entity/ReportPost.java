@@ -10,7 +10,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @Table(name = "report_posts")
-public class ReportPost extends BaseTimeEntity {
+public class ReportPost extends BaseEntity {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)

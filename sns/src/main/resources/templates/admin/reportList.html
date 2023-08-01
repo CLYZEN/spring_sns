@@ -3,31 +3,69 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/layout1}">
 <head>
-  <meta name="_csrf" th:content="${_csrf.token}"/>
-  <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 </head>
 <!-- 각 페이지의 CSS가 작성될 위치 -->
 <th:block layout:fragment="css">
-  <style>
+    <style>
 
-  </style>
+    </style>
 </th:block>
 
 <div layout:fragment="content">
-  <!-- site content
-      ================================================== -->
-  <div class="s-content content">
-    <main class="row content__page">
-      <section class="column large-full entry format-standard article-card">
+    <!-- site content
+        ================================================== -->
 
-      </section>
-    </main>
-  </div>
 
-  <!-- 각 페이지의 스크립트가 작성될 위치 -->
-  <th:block layout:fragment="script">
-    <script th:inline="javascript">
+    <table>
+        <thead>
+        <tr>
+            <th>글번호</th>
+            <th>제목</th>
+            <th>유저</th>
+            <th>신고자</th>
+            <th>신고내용</th>
+        </tr>
+        </thead>
+        <tbody th:each="report, status:${reportPosts}">
+        <tr>
+            <td th:text="${report.post.postNo}"></td>
+            <td><a th:href="@{'/post/article/' + ${report.post.postNo}}" th:text="${report.post.subject}"></a></td>
+            <td><a th:href="@{'/member/detail/' + ${report.member.memberId}}" th:text="${report.member.email}"></a></td>
+            <td th:text="${report.createdBy}"></td>
+            <td th:text="${report.reportReason}"></td>
+        </tr>
 
-    </script>
-  </th:block>
+        </tbody>
+    </table>
+    <div class="row">
+        <div class="column large-full">
+            <nav class="pgn" th:with="start=${(reportPosts.number/maxPage)*maxPage + 1}
+			                 ,end=(${(reportPosts.totalPages == 0) ? 1 : (start + (maxPage - 1) < reportPosts.totalPages ? start + (maxPage - 1) : reportPosts.totalPages)})">
+                <ul>
+                    <li th:classappend="${reportPosts.first}?'disabled'">
+                        <a class="pgn__prev" href="#0" th:href="@{'/main/'+ ${reportPosts.number - 1}}">다음</a>
+                    </li>
+                    <li th:each="page: ${#numbers.sequence(start, end)}"
+                    >
+                        <a class="pgn__num"
+                           th:href="@{'/main/' + ${page - 1}}"
+                           th:classappend="${reportPosts.number eq page - 1}?'current':''">[[${page}]]</a>
+                    </li>
+                    <li th:classappend="${reportPosts.last}?'disabled'">
+                        <a class="pgn__next" th:href="@{'/main/' + ${reportPosts.number + 1}}">이전</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+
+    <!-- 각 페이지의 스크립트가 작성될 위치 -->
+    <th:block layout:fragment="script">
+        <script th:inline="javascript">
+
+        </script>
+    </th:block>
 </html>

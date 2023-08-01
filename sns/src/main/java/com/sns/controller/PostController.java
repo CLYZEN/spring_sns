@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 
 import com.sns.dto.*;
 import com.sns.entity.*;
+import com.sns.repository.MemberInterestsRepository;
+import com.sns.repository.MemberRepository;
 import com.sns.service.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -36,6 +38,9 @@ public class PostController {
 	private final PostImageService postImageService;
 	private final CommentService commentService;
 	private final LikeService likeService;
+	private final MemberInterestsRepository memberInterestsRepository;
+	private final MemberRepository memberRepository;
+
 	@GetMapping(value = "/post/new")
 	public String newPost(Model model) {
 		
@@ -68,6 +73,12 @@ public class PostController {
 	}
 	@GetMapping(value = {"/main", "/main/{page}"})
 	public String mainPost(@PathVariable("page") Optional<Integer> page, Principal principal, Model model) {
+
+		if (memberInterestsRepository.findByMember(memberRepository.findByEmail(principal.getName())) == null) {
+			model.addAttribute("memberInterestsDto",new MemberInterestsDto());
+			return "member/selectMemberInterests";
+		}
+
 		Member member = memberService.findByEmail(principal.getName());
 		Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0 , 10);
 
