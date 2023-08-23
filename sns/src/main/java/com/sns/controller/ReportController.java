@@ -27,6 +27,6 @@ public class ReportController {
         model.addAttribute("reportPosts", reportPosts);
         model.addAttribute("maxPage", 5);
 
-        return "/admin/reportList";
+        return "admin/reportList";
     }
 }

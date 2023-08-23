@@ -1,6 +1,7 @@
 package com.sns.service;
 
 import com.sns.dto.PostImgDto;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,7 +19,8 @@ import java.util.List;
 @Transactional
 public class PostImageService {
 	//private String itemImgLocation = "C:/shop/item";
-	private String itemImgLocation = "/Users/seongchule/Documents/ezen_project/snsImg/item"; // for macos
+	@Value("${itemImgLocation}")
+	private String itemImgLocation; // for macos
 	private final PostImageRepository postImageRepository;
 	private final FileService fileService;
 	

@@ -2,6 +2,7 @@ package com.sns.service;
 
 import com.sns.dto.MemberInterestsDto;
 import com.sns.dto.ProfileFormDto;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -24,7 +25,8 @@ import org.thymeleaf.util.StringUtils;
 @RequiredArgsConstructor
 public class MemberService implements UserDetailsService{
 
-	private String profileImgLocation = "/Users/seongchule/Documents/ezen_project/snsImg/profile"; // for maco
+	@Value("${profileImgLocation}")
+	private String profileImgLocation;
 	private final MemberRepository memberRepository;
 	private final MemberInterestsRepository memberInterestsRepository;
 	private final FileService fileService;
