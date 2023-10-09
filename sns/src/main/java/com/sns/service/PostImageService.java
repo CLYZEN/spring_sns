@@ -18,7 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional
 public class PostImageService {
-	//private String itemImgLocation = "C:/shop/item";
+	//private String itemImgLocation = "/Users/seongchule/Documents/ezen_project/snsImg/item"; // for macos
 	@Value("${itemImgLocation}")
 	private String itemImgLocation; // for macos
 	private final PostImageRepository postImageRepository;

@@ -27,6 +27,7 @@ public class MemberService implements UserDetailsService{
 
 	@Value("${profileImgLocation}")
 	private String profileImgLocation;
+	//private String profileImgLocation = "/Users/seongchule/Documents/ezen_project/snsImg/profile"; // for maco
 	private final MemberRepository memberRepository;
 	private final MemberInterestsRepository memberInterestsRepository;
 	private final FileService fileService;

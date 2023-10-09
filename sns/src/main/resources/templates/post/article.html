@@ -113,7 +113,8 @@
                     <a th:if="${#strings.equals(post.postInterests.animal, 'true')}" th:text="${'동물'}"></a>
                   </span>
                     <i class="far fa-heart" id="heartIcon" style="float: right; cursor: pointer; color: red;"
-                       th:class="${liked ? 'fas fa-heart' : 'far fa-heart'}" th:data-postno="${post.postNo}" onclick="toggleLike(this)"></i>
+                       th:class="${liked ? 'fas fa-heart' : 'far fa-heart'}" th:data-postno="${post.postNo}"
+                       onclick="toggleLike(this)"></i>
                 </p>
                 <div class="comments-wrap">
                     <div id="comments" class="column large-12">
@@ -134,10 +135,15 @@
 
                                 <div class="comment__content">
                                     <div class="comment__info">
-                                       <a th:href="@{|/member/detail/${comment.member.memberId}|}"> <div class="comment__author" th:text="${comment.member.nickname}" >닉네임</div></a>
+                                        <a th:href="@{|/member/detail/${comment.member.memberId}|}">
+                                            <div class="comment__author" th:text="${comment.member.nickname}">닉네임</div>
+                                        </a>
 
                                         <div class="comment__meta">
-                                            <div class="comment__time" th:text="${#temporals.format(comment.regTime, 'yyyy-MM-dd HH:mm:ss')}">작성일</div>
+                                            <div class="comment__time"
+                                                 th:text="${#temporals.format(comment.regTime, 'yyyy-MM-dd HH:mm:ss')}">
+                                                작성일
+                                            </div>
                                             <div class="comment__reply"></div>
                                         </div>
                                     </div>
@@ -187,12 +193,11 @@
                                 <fieldset>
                                     <div class="form-field">
                                         <div class="message form-field">
-						<textarea name="cMessage" id="cMessage" class="full-width" th:field="*{content}"
-                                  placeholder="댓글입력"></textarea>
+						                    <textarea name="cMessage" id="cMessage" class="full-width" th:field="*{content}"
+                                            placeholder="댓글입력"></textarea>
                                         </div>
-                                        <input name="submit" id="submit"
-                                               class="btn btn--primary btn-wide btn--large full-width"
-                                               value="전송" onclick="checkComment()"/>
+                                        <input name="submit" id="submit" type="submit" class="btn btn--primary btn-wide btn--large full-width" value="전송" onclick="return checkComment();" />
+
                                     </div>
                                 </fieldset>
                             </form>
@@ -273,14 +278,28 @@
             }
 
             function checkComment() {
-                let commnet = $('#cMessage');
+                let comment = $('#cMessage');
 
-                if(commnet == null || commnet.empty()) {
+                if (comment.length === 0 || comment.val().trim() === '') {
                     alert("댓글을 입력해주세요!");
-                    return;
+                    return false; // 폼 제출을 방지
+                } else {
+                    return true; // 폼 제출 허용
                 }
-                $('#commentForm').submit();
             }
+
+
+            /* function checkComment() {
+                 let comment = $('#cMessage');
+
+                 if (comment == null || comment.empty()) {
+                     alert("댓글을 입력해주세요!");
+                     return;
+                 } else {
+                     $('#commentForm').submit();
+                     return;
+                 }
+             }*/
 
             function toggleLike(heartIcon) {
                 var isLiked = heartIcon.classList.contains('fas');
@@ -294,19 +313,19 @@
                 $.ajax({
                     url: url,
                     type: method,
-                    beforeSend: function(xhr) {
+                    beforeSend: function (xhr) {
                         xhr.setRequestHeader(header, token);
                     },
-                    data: JSON.stringify({ postNo: postNo, memberId: /*[[${member.memberId}]]*/ 0 }),
+                    data: JSON.stringify({postNo: postNo, memberId: /*[[${member.memberId}]]*/ 0}),
                     contentType: "application/json",
-                    success: function(result) {
+                    success: function (result) {
                         // 요청 성공 처리
                         console.log("좋아요 " + (isLiked ? "취소" : "추가") + " 성공");
                         // 좋아요 상태 토글
                         heartIcon.classList.toggle('fas');
                         heartIcon.classList.toggle('far');
                     },
-                    error: function(jqXHR, status, error) {
+                    error: function (jqXHR, status, error) {
                         // 오류 처리
                         alert("에러 발생 다시 시도해 주세요!");
                         console.error("좋아요 " + (isLiked ? "취소" : "추가") + " 오류: " + error);

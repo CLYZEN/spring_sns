@@ -131,7 +131,8 @@ public class PostController {
 		return "post/article";
 	}
 
-	@PostMapping(value = "addComment/{postNo}")
+
+	@PostMapping(value = "/addComment/{postNo}")
 	public String addComment(Principal principal, @PathVariable Long postNo, @Valid CommentFormDto commentFormDto){
 		commentFormDto.setPost(postService.findId(postNo));
 		commentFormDto.setMember(memberService.findByEmail(principal.getName()));

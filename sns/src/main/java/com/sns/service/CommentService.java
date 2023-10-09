@@ -23,7 +23,6 @@ public class CommentService {
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
 
-    @Async
     public void saveComment(CommentFormDto commentFormDto) {
         commentRepository.save(commentFormDto.createComment(commentFormDto));
     }
